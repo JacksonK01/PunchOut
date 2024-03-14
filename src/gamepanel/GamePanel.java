@@ -22,13 +22,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
-    Player player = new Player();
+    public Player player = new Player(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.black);
+        this.setBackground(Color.BLUE);
         this.setDoubleBuffered(true);
-        //this.addKeyListener(this.keyH);
+        this.addKeyListener(this.keyH);
         this.setFocusable(true);
     }
 
@@ -67,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-
+        player.update();
     }
 
     public void paintComponent(Graphics g) {
@@ -75,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        g2.fillRect(0, 0, 48, 48);
+        player.draw(g2);
 
         g2.dispose();
     }
