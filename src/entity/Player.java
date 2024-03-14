@@ -13,12 +13,18 @@ public class Player extends Entity {
 
     BufferedImage spriteSheet;
     GamePanel gp;
+    boolean isDodgeRight, isDodgeLeft;
+    int dodgeFrameCounter = 0;
+    final int DODGE_FRAMES = 20;
+    int speed;
+
 
     public Player(GamePanel gp) {
 
         this.gp = gp;
-        this.worldX = gp.screenWidth/2;
+        this.worldX = gp.screenWidth/2 - gp.scaledTileSize/2;
         this.worldY = 400;
+        this.speed = 7;
 
         try {
             this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/little_mac/little_mac_spritesheet.png")));
@@ -30,18 +36,49 @@ public class Player extends Entity {
     }
 
     public void dodgeRight() {
-        this.worldX += 10;
+        if(!isDodgeRight) {
+            isDodgeRight = true;
+            dodgeFrameCounter = 0;
+        }
+
+        if(dodgeFrameCounter < DODGE_FRAMES/2) {
+            this.worldX += this.speed;
+        } else {
+            this.worldX -= this.speed;
+        }
+
+        dodgeFrameCounter++;
+
+        if(dodgeFrameCounter >= DODGE_FRAMES) {
+            isDodgeRight = false;
+            dodgeFrameCounter = 0;
+        }
     }
 
     public void dodgeLeft() {
-        this.worldX -= 10;
+        if(!isDodgeLeft) {
+            isDodgeLeft = true;
+            dodgeFrameCounter = 0;
+        }
+
+        if(dodgeFrameCounter < DODGE_FRAMES/2) {
+            this.worldX -= this.speed;
+        } else {
+            this.worldX += this.speed;
+        }
+
+        dodgeFrameCounter++;
+
+        if(dodgeFrameCounter >= DODGE_FRAMES) {
+            isDodgeLeft = false;
+            dodgeFrameCounter = 0;
+        }
     }
 
     public void update() {
-        if(gp.keyH.rightPressed) {
+        if((gp.keyH.rightPressed || isDodgeRight) && !isDodgeLeft) {
             dodgeRight();
-        }
-        if(gp.keyH.leftPressed) {
+        }else if((gp.keyH.leftPressed || isDodgeLeft) && !isDodgeRight) {
             dodgeLeft();
         }
     }
