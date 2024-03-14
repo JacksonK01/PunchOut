@@ -1,5 +1,6 @@
 package gamepanel;
 
+import entity.Player;
 import input.KeyHandler;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
+    Player player = new Player();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
