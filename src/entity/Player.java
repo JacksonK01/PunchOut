@@ -24,7 +24,7 @@ public class Player extends Entity {
         this.gp = gp;
         this.worldX = gp.screenWidth/2 - gp.scaledTileSize/2;
         this.worldY = 400;
-        this.speed = 7;
+        this.speed = 5;
 
         try {
             this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/little_mac/little_mac_spritesheet.png")));
@@ -81,6 +81,8 @@ public class Player extends Entity {
         }else if((gp.keyH.leftPressed || isDodgeLeft) && !isDodgeRight) {
             dodgeLeft();
         }
+
+
     }
 
     public void draw(Graphics2D g2) {

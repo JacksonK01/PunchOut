@@ -2,6 +2,7 @@ package gamepanel;
 
 import entity.Player;
 import input.KeyHandler;
+import scene.SceneRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
     public Player player = new Player(this);
+    public SceneRenderer sceneRenderer = new SceneRenderer(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -70,11 +72,13 @@ public class GamePanel extends JPanel implements Runnable {
         player.update();
     }
 
+    //The order of drawing is important
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
+        sceneRenderer.draw(g2);
         player.draw(g2);
 
         g2.dispose();
