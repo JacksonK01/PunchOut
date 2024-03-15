@@ -32,7 +32,6 @@ public class Animation {
     }
 
     public void drawAnimation(Graphics2D g2) {
-
         spriteCounter++;
         if (spriteCounter > speed) {
             currentFrame++;

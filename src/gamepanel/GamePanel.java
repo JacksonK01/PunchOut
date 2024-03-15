@@ -3,6 +3,7 @@ package gamepanel;
 import entity.Player;
 import input.KeyHandler;
 import scene.SceneRenderer;
+import ui.UI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +24,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
-    public Player player = new Player(this);
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
+    public Player player = new Player(this);
+    UI ui = new UI();
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -80,6 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         sceneRenderer.draw(g2);
         player.draw(g2);
+        ui.draw(g2);
 
         g2.dispose();
     }
