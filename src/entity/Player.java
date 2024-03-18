@@ -17,6 +17,7 @@ public class Player extends Entity {
     //These are purely for loading images in from the sprite sheet
     final int SPRITE_WIDTH = 25;
     final int SPRITE_HEIGHT = 62;
+    boolean isDoingAction;
 
     GamePanel gp;
 
@@ -25,6 +26,8 @@ public class Player extends Entity {
     boolean isDodgeRight, isDodgeLeft;
     int dodgeFrameCounter = 0;
     final int DODGE_FRAMES = 20;
+
+    Animation punchLeft, punchRight;
 
     int speed;
     int cooldown;
@@ -65,6 +68,13 @@ public class Player extends Entity {
                 .setLoop(false)
                 .setOwnerEntity(this)
                 .build();
+
+        punchLeft = AnimationBuilder.newInstance()
+                .setAnimationWithoutArray(1)
+                .setFrame(spriteSheet.getSubimage(130, 23, SPRITE_WIDTH, SPRITE_HEIGHT), 0)
+                .setSpeed(10)
+                .setOwnerEntity(this)
+                .build();
     }
 
     public void addCoolDown(int num) {
@@ -75,9 +85,14 @@ public class Player extends Entity {
         this.cooldown = num;
     }
 
+    public boolean isReadyForAction() {
+        return cooldown <= 0 && !isDoingAction;
+    }
+
     public void dodgeRight() {
         if(!isDodgeRight) {
             isDodgeRight = true;
+            isDoingAction = true;
             dodgeFrameCounter = 0;
         }
 
@@ -91,6 +106,7 @@ public class Player extends Entity {
 
         if(dodgeFrameCounter >= DODGE_FRAMES) {
             isDodgeRight = false;
+            isDoingAction = false;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
@@ -116,34 +132,33 @@ public class Player extends Entity {
         }
     }
 
+    public void punchLeft() {
+
+    }
+
     public void update() {
-        if((gp.keyH.rightPressed || isDodgeRight) && !isDodgeLeft && cooldown == 0) {
+        if((gp.keyH.rightPressed || isDodgeRight) && cooldown == 0 && !isDodgeLeft) {
             dodgeRight();
-        }else if((gp.keyH.leftPressed || isDodgeLeft) && !isDodgeRight && cooldown == 0) {
+        }else if((gp.keyH.leftPressed || isDodgeLeft) && cooldown == 0 && !isDodgeRight) {
             dodgeLeft();
         }
-
         if(cooldown > 0) {
             cooldown--;
         }
     }
 
     public void draw(Graphics2D g2) {
-        //1:2 ratio for sprite (This doesn't look right imo) TODO fix the ratio
         //TODO fix using .reset() and find a way to naturally reset the animation
         if(isDodgeRight) {
-            dodgeRight.setPosAndDrawAnimation(this.worldX, this.worldY, g2);
+            dodgeRight.drawAnimation(g2);
         } else if(isDodgeLeft) {
-            dodgeLeft.setPosAndDrawAnimation(this.worldX, this.worldY, g2);
+            dodgeLeft.drawAnimation(g2);
         } else {
             g2.drawImage(this.sprite, this.worldX, this.worldY, this.entityWidth, this.entityHeight, null);
             dodgeRight.reset();
             dodgeLeft.reset();
         }
-//        if(isDodgeRight) {
-//            dodgeRight.setPosAndDrawAnimation(this.worldX, this.worldY, g2);
-//        } else {
-//            dodgeLeft.setPosAndDrawAnimation(this.worldX, this.worldY, g2);
-//        }
+
+        //punchLeft.drawAnimation(g2);
     }
 }

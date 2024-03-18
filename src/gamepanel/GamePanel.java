@@ -7,6 +7,7 @@ import ui.UI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -72,6 +73,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         player.update();
+
+
     }
 
     //The order of drawing is important

@@ -16,7 +16,7 @@ public class SceneRenderer {
     public SceneRenderer(GamePanel gp) {
         this.gp = gp;
         try {
-            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/scenes/boxing_ring/boxing_rings.png")));
+            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/scenes/boxing_ring/boxing_rings2.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -24,7 +24,7 @@ public class SceneRenderer {
         blueBoxingRing = new Scene(spriteSheet.getSubimage(2, 2, 256, 224));
     }
 
-    //This will be made better when more backgrounds are added
+    //TODO make this streamlined
     public void draw(Graphics g2) {
         g2.drawImage(blueBoxingRing.getFrame(), 0, 0, gp.screenWidth, gp.screenHeight, null);
     }

@@ -15,6 +15,7 @@ public class Animation {
 
     private int spriteCounter = 0;
     private int currentFrame = 0;
+    private boolean isAnimationDone = false;
 
     //Only if needed
     Entity ownerEntity;
@@ -32,11 +33,13 @@ public class Animation {
     }
 
     public void drawAnimation(Graphics2D g2) {
-        spriteCounter++;
+        if(!isAnimationDone) {
+            spriteCounter++;
+        }
         if (spriteCounter > speed) {
             currentFrame++;
-            if(loop && currentFrame == frames.length) {
-                currentFrame = 0;
+            if(currentFrame == frames.length - 1) {
+                isAnimationDone = true;
             }
             spriteCounter = 0;
         }
@@ -46,9 +49,9 @@ public class Animation {
             g2.drawImage(this.frames[currentFrame], x, y, width, height, null);
         }
 
-//        if(currentFrame == frames.length - 1 && !loop) {
-//            reset();
-//        }
+        if(loop) {
+            isAnimationDone = false;
+        }
     }
 
     public BufferedImage getFrame(int i) {
@@ -85,5 +88,6 @@ public class Animation {
     public void reset() {
         this.spriteCounter = 0;
         this.currentFrame = 0;
+        this.isAnimationDone = false;
     }
 }
