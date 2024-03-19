@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
     public Player player = new Player(this);
-    UI ui = new UI();
+    UI ui = new UI(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -72,8 +72,8 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        ui.update();
         player.update();
-
 
     }
 

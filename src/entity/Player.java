@@ -29,6 +29,9 @@ public class Player extends Entity {
 
     Animation punchLeft, punchRight;
 
+    public int score = 0;
+    public int testScore = 132020;
+
     public Player(GamePanel gp) {
 
         this.gp = gp;
