@@ -17,21 +17,17 @@ public class Player extends Entity {
     //These are purely for loading images in from the sprite sheet
     final int SPRITE_WIDTH = 25;
     final int SPRITE_HEIGHT = 62;
-    boolean isDoingAction;
+    PlayerState currentState = PlayerState.IDLE;
+    int speed;
+    int cooldown;
 
     GamePanel gp;
 
     Animation dodgeRight, dodgeLeft;
-
-    boolean isDodgeRight, isDodgeLeft;
     int dodgeFrameCounter = 0;
     final int DODGE_FRAMES = 20;
 
     Animation punchLeft, punchRight;
-
-    int speed;
-    int cooldown;
-
 
     public Player(GamePanel gp) {
 
@@ -85,39 +81,26 @@ public class Player extends Entity {
         this.cooldown = num;
     }
 
-    public boolean isReadyForAction() {
-        return cooldown <= 0 && !isDoingAction;
-    }
 
+    //dodgeFrameCounter starts at 0 before this runs
     public void dodgeRight() {
-        if(!isDodgeRight) {
-            isDodgeRight = true;
-            isDoingAction = true;
-            dodgeFrameCounter = 0;
-        }
-
+        currentState = PlayerState.DODGE_RIGHT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX += this.speed;
         } else {
             this.worldX -= this.speed;
         }
-
         dodgeFrameCounter++;
 
         if(dodgeFrameCounter >= DODGE_FRAMES) {
-            isDodgeRight = false;
-            isDoingAction = false;
+            currentState = PlayerState.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
     }
 
     public void dodgeLeft() {
-        if(!isDodgeLeft) {
-            isDodgeLeft = true;
-            dodgeFrameCounter = 0;
-        }
-
+        currentState = PlayerState.DODGE_LEFT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX -= this.speed;
         } else {
@@ -126,7 +109,7 @@ public class Player extends Entity {
         dodgeFrameCounter++;
 
         if(dodgeFrameCounter >= DODGE_FRAMES) {
-            isDodgeLeft = false;
+            currentState = PlayerState.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
@@ -136,10 +119,18 @@ public class Player extends Entity {
 
     }
 
+    public boolean isDodgeRight() {
+        return currentState == PlayerState.DODGE_RIGHT;
+    }
+
+    public boolean isDodgeLeft() {
+        return currentState == PlayerState.DODGE_LEFT;
+    }
+
     public void update() {
-        if((gp.keyH.rightPressed || isDodgeRight) && cooldown == 0 && !isDodgeLeft) {
+        if((gp.keyH.rightPressed || isDodgeRight()) && cooldown == 0) {
             dodgeRight();
-        }else if((gp.keyH.leftPressed || isDodgeLeft) && cooldown == 0 && !isDodgeRight) {
+        } else if((gp.keyH.leftPressed || isDodgeLeft()) && cooldown == 0) {
             dodgeLeft();
         }
         if(cooldown > 0) {
@@ -149,9 +140,9 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2) {
         //TODO fix using .reset() and find a way to naturally reset the animation
-        if(isDodgeRight) {
+        if(isDodgeRight()) {
             dodgeRight.drawAnimation(g2);
-        } else if(isDodgeLeft) {
+        } else if(isDodgeLeft()) {
             dodgeLeft.drawAnimation(g2);
         } else {
             g2.drawImage(this.sprite, this.worldX, this.worldY, this.entityWidth, this.entityHeight, null);
@@ -160,5 +151,11 @@ public class Player extends Entity {
         }
 
         //punchLeft.drawAnimation(g2);
+    }
+
+    public enum PlayerState {
+        IDLE,
+        DODGE_RIGHT,
+        DODGE_LEFT;
     }
 }
