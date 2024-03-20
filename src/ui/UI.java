@@ -25,9 +25,6 @@ public class UI {
             e.printStackTrace();
         }
 
-        int totalWidth = spriteSheet.getWidth();
-        int totalHeight = spriteSheet.getHeight();
-
         int i = 0;
         int xOffset = 1;
         for(int x = 0; x < numberSprites.length; x++){
@@ -39,16 +36,7 @@ public class UI {
     }
 
         public void update() {
-            /*
-            int score = gp.player.score;
-            String scoreStr = Integer.toString(score);
-            for (int i = scoreStr.length()-1; i > 0; i--) {
-                int digit = Character.getNumericValue(scoreStr.charAt(i));
-                displayNumImage = numberSprites[digit];
 
-
-            }
-            */
         }
         public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
