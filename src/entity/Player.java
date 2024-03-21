@@ -87,8 +87,6 @@ public class Player extends Entity {
 
     //dodgeFrameCounter starts at 0 before this runs
     public void dodgeRight() {
-
-
         currentState = PlayerState.DODGE_RIGHT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX += this.speed;
@@ -105,10 +103,6 @@ public class Player extends Entity {
     }
 
     public void dodgeLeft() {
-        if(dodgeFrameCounter == 0) {
-            addCoolDown(20);
-        }
-
         currentState = PlayerState.DODGE_LEFT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX -= this.speed;
@@ -137,9 +131,9 @@ public class Player extends Entity {
     }
 
     public void update() {
-        if((gp.keyH.rightPressed && cooldown == 0) || isDodgeRight()) {
+        if((gp.keyH.rightPressed && cooldown == 0 && currentState == PlayerState.IDLE) || isDodgeRight()) {
             dodgeRight();
-        } else if((gp.keyH.leftPressed && cooldown == 0) || isDodgeLeft()) {
+        } else if((gp.keyH.leftPressed && cooldown == 0 && currentState == PlayerState.IDLE) || isDodgeLeft()) {
             dodgeLeft();
         }
         if(cooldown > 0) {
