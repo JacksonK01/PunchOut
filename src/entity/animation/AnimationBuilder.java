@@ -1,6 +1,7 @@
 package entity.animation;
 
 import entity.Entity;
+import utility.UtilityTool;
 
 import java.awt.image.BufferedImage;
 
@@ -32,9 +33,20 @@ public class AnimationBuilder {
 
     //Don't set a frame before using setting the animation with or without an array
     public AnimationBuilder setFrame(BufferedImage image, int i) {
+        BufferedImage scaleImage = UtilityTool.scaleImage(image, 48, 48*2);
         if(this.frames != null) {
             if(0 <= i && i < frames.length) {
-                frames[i] = image;
+                frames[i] = scaleImage;
+            }
+        }
+        return this;
+    }
+
+    public AnimationBuilder setFrameAndSize(BufferedImage image, int width, int height, int i) {
+        BufferedImage scaleImage = UtilityTool.scaleImage(image, width, height);
+        if(this.frames != null) {
+            if(0 <= i && i < frames.length) {
+                frames[i] = scaleImage;
             }
         }
         return this;

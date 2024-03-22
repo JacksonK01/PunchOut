@@ -30,6 +30,9 @@ public class Animation {
         this.width = builder.width;
         this.height = builder.height;
         this.ownerEntity = builder.ownerEntity;
+        if(ownerEntity != null) {
+            ownerEntity.addAnimationToRegistry(this);
+        }
     }
 
     public void drawAnimation(Graphics2D g2) {
@@ -38,15 +41,16 @@ public class Animation {
         }
         if (spriteCounter > speed) {
             currentFrame++;
-            if(currentFrame == frames.length - 1) {
+            if(currentFrame >= frames.length - 1) {
                 isAnimationDone = true;
             }
             spriteCounter = 0;
         }
+
         if(ownerEntity != null) {
-            g2.drawImage(this.frames[currentFrame], ownerEntity.getWorldX(), ownerEntity.getWorldY(), ownerEntity.getEntityWidth(), ownerEntity.getEntityHeight(), null);
+            g2.drawImage(this.frames[currentFrame], ownerEntity.getWorldX(), ownerEntity.getWorldY(), null);
         } else {
-            g2.drawImage(this.frames[currentFrame], x, y, width, height, null);
+            g2.drawImage(this.frames[currentFrame], x, y, null);
         }
 
         if(loop) {

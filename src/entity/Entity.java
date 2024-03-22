@@ -1,12 +1,16 @@
 package entity;
 
+import entity.animation.Animation;
+
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 //The mother class for all entities
 public abstract class Entity {
     int health;
     int worldX, worldY;
     BufferedImage sprite;
+    protected ArrayList<Animation> animationRegistry = new ArrayList<>();
 
     //This is used for objects like Animation
     int entityWidth;
@@ -30,5 +34,16 @@ public abstract class Entity {
 
     public int getEntityHeight() {
         return entityHeight;
+    }
+
+    public void addAnimationToRegistry(Animation a) {
+        animationRegistry.add(a);
+    }
+
+    public void animationRegistryReset() {
+        animationRegistry.forEach(animation -> {
+                animation.reset();
+            }
+        );
     }
 }
