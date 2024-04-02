@@ -9,23 +9,27 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 
 public class UI {
     private BufferedImage spriteSheet;
     private BufferedImage[] numberSprites = new BufferedImage[10];
-    private BufferedImage[] numberSpritesWhite = new BufferedImage[10];
+    private BufferedImage[] roundSprites = new BufferedImage[3];
     GamePanel gp;
 
     public int textSmaller = 2;
     public int textGap =1;
-
+    private Font customFont;
 
     public UI(GamePanel gp) {
         this.gp = gp;
+
         try {
             //numbers are in the same file as the sprite sheet for the boxing ring
             spriteSheet = ImageIO.read(getClass().getResource("/ui/ui.png"));
-        } catch (IOException e) {
+            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Resource/ui/punch-out-nes.ttf")).deriveFont(20f);
+        } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
 
@@ -33,11 +37,12 @@ public class UI {
         int xOffset = 1;
         for(int x = 0; x < numberSprites.length; x++){
             this.numberSprites[i] = spriteSheet.getSubimage(x*7+xOffset, 1, 7, 7);
-            this.numberSpritesWhite[i] = spriteSheet.getSubimage(x*7+xOffset, 9, 7, 7);
+
             xOffset += 1;
             i++;
         }
-       // displayNumImage = numberSprites[0];
+        // x 0 to 32 y 12 to 17 on sprite sheet
+        //this.roundSprites[i] = spriteSheet.getSubimage(x*7+xOffset, 12, 32, 6);
 
     }
 
@@ -48,10 +53,16 @@ public class UI {
             // made it without an image builder, but it works ig
             int score = gp.player.testScore;
             String scoreStr = Integer.toString(score);
+            /*
             for (int i = scoreStr.length()-1; i >= 0; i--) {
                 int digit = Character.getNumericValue(scoreStr.charAt(i));
                 g2.drawImage(numberSprites[digit], 200* gp.scale - (Math.abs(i-scoreStr.length()-1)) * (numberSprites[digit].getWidth()-textGap) * gp.scale , 21 * gp.scale + 2, numberSprites[digit].getWidth()* gp.scale - textSmaller, numberSprites[digit].getHeight()* gp.scale - textSmaller,  null);
             }
+            */
+            g2.setFont(customFont);
+            g2.setColor(Color.WHITE);
+            // TODO: If keep, make font always keep last digit in the same place
+            g2.drawString(scoreStr, 160* gp.scale, 27* gp.scale + 2);
         }
         public void drawStamina(Graphics2D g2){
             //int stamina = gp.player.;
@@ -106,9 +117,13 @@ public class UI {
             //g2.setColor(Color.BLACK);
             //g2.drawRect(x, y, barWidth, barHeight);
 }
-public void drawScoreboard(Graphics2D g2){
+        public void drawScoreboard(Graphics2D g2){
+            // get round on sprite sheet
+            // get timer, use font to display
+            // x 0 to 32 y 12 to 17 on sprite sheet
 
-}
+
+        }
         public void draw (Graphics2D g2){
             drawScore(g2);
             drawStamina(g2);
