@@ -1,5 +1,7 @@
 package gamepanel;
 
+import entity.Entity;
+import entity.GlassJoe;
 import entity.Player;
 import input.KeyHandler;
 import scene.SceneRenderer;
@@ -23,10 +25,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int FPS = 60;
 
+    //Corresponds with the current enemy the player will fight
+    int currentLevel = 1;
+
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
     public Player player = new Player(this);
+    Entity opponent;
     UI ui = new UI(this);
 
     public GamePanel() {
@@ -35,6 +41,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keyH);
         this.setFocusable(true);
+
+        //First opponent is always glass joe
+        this.opponent = new GlassJoe();
     }
 
     public void startGameThread() {
@@ -74,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         ui.update();
         player.update();
+        opponent.update();
 
     }
 
@@ -84,6 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         sceneRenderer.draw(g2);
+        opponent.draw(g2);
         player.draw(g2);
         ui.draw(g2);
 

@@ -33,6 +33,8 @@ public class Player extends Entity {
     final int JAB_FRAMES = 20;
     final int JAB_SPEED = 2;
 
+    Animation duck;
+
     public int score = 0;
     public int testScore = 132020;
 
@@ -182,6 +184,7 @@ public class Player extends Entity {
 
     public boolean isReadyForAction() {return currentState == PlayerState.IDLE && cooldown == 0;}
 
+    @Override
     public void update() {
         if((gp.keyH.rightPressed && isReadyForAction()) || isDodgeRight()) {
             dodgeRight();
@@ -198,6 +201,7 @@ public class Player extends Entity {
         }
     }
 
+    @Override
     public void draw(Graphics2D g2) {
         //TODO fix using .reset() and find a way to naturally reset the animation
         if(isDodgeRight()) {

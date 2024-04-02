@@ -2,6 +2,7 @@ package entity;
 
 import entity.animation.Animation;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
@@ -11,6 +12,9 @@ public abstract class Entity {
     int worldX, worldY;
     BufferedImage sprite;
     protected ArrayList<Animation> animationRegistry = new ArrayList<>();
+
+    boolean isAttacking;
+    boolean isDodging;
 
     //This is used for objects like Animation
     int entityWidth;
@@ -46,4 +50,7 @@ public abstract class Entity {
             }
         );
     }
+
+    public abstract void update();
+    public abstract void draw(Graphics2D g2);
 }
