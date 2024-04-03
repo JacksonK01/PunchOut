@@ -22,6 +22,9 @@ public class UI {
     public int textGap =1;
     private Font customFont;
 
+    //Max amount of digits a scoreboard can display
+    public final int MAX_DIGITS = 6;
+
     public UI(GamePanel gp) {
         this.gp = gp;
 
@@ -52,7 +55,10 @@ public class UI {
         public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
             int score = gp.player.testScore;
+
             String scoreStr = Integer.toString(score);
+
+            int shift = (MAX_DIGITS - scoreStr.length()) * 20;
             /*
             for (int i = scoreStr.length()-1; i >= 0; i--) {
                 int digit = Character.getNumericValue(scoreStr.charAt(i));
@@ -62,7 +68,7 @@ public class UI {
             g2.setFont(customFont);
             g2.setColor(Color.WHITE);
             // TODO: If keep, make font always keep last digit in the same place
-            g2.drawString(scoreStr, 160* gp.scale, 27* gp.scale + 2);
+            g2.drawString(scoreStr, 150* gp.scale + shift, 27* gp.scale + 2);
         }
         public void drawStamina(Graphics2D g2){
             //int stamina = gp.player.;
