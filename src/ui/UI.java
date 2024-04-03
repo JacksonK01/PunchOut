@@ -2,7 +2,6 @@ package ui;
 
 import entity.Player;
 import gamepanel.GamePanel;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
-
 public class UI {
     private BufferedImage spriteSheet;
     private BufferedImage[] numberSprites = new BufferedImage[10];
@@ -45,8 +43,11 @@ public class UI {
             i++;
         }
         // x 0 to 32 y 12 to 17 on sprite sheet
-        //this.roundSprites[i] = spriteSheet.getSubimage(x*7+xOffset, 12, 32, 6);
-
+        // 115 total pixels, 35 pixels per round
+        // TODO: Make Round sprites work
+        for(int x = 0; x < roundSprites.length; x++) {
+            this.roundSprites[x] = spriteSheet.getSubimage((x*36)+1, 12, 32, 7);
+        }
     }
 
         public void update() {
@@ -127,6 +128,9 @@ public class UI {
             // get round on sprite sheet
             // get timer, use font to display
             // x 0 to 32 y 12 to 17 on sprite sheet
+            // TODO: Make Round Print on screen
+            int tempRound = 1;
+            g2.drawImage(roundSprites[tempRound-1], 207*gp.scale, 20*gp.scale, 32* gp.scale, 6* gp.scale, null);
 
 
         }
@@ -135,5 +139,6 @@ public class UI {
             drawStamina(g2);
             drawCharge(g2);
             drawHealth(g2);
+            drawScoreboard(g2);
         }
     }
