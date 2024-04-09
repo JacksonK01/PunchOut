@@ -130,15 +130,36 @@ public class UI {
             // x 0 to 32 y 12 to 17 on sprite sheet
             // TODO: Make Round Print on screen
             int tempRound = 1;
-            g2.drawImage(roundSprites[tempRound-1], 207*gp.scale, 20*gp.scale, 32* gp.scale, 6* gp.scale, null);
+            g2.drawImage(roundSprites[tempRound-1], 207*gp.scale, 22*gp.scale, 32* gp.scale, 6* gp.scale, null);
 
 
         }
+        public int counter = 0;
+        public void drawTimer(Graphics2D g2){
+            // get timer, use font to display
+
+            if(counter >= 60){
+                counter = 0;
+                GamePanel.timeElapsed++;
+            }
+            counter++;
+            // get time in min:seconds format counting down from total seconds
+            int secondsRemaining = GamePanel.totalTime - GamePanel.timeElapsed;
+            int minutes = secondsRemaining / 60;
+            int seconds = secondsRemaining % 60;
+            String time = String.format("%02d:%02d", minutes, seconds);
+            g2.setFont(customFont);
+            g2.setColor(Color.WHITE);
+            g2.drawString(time, 207* gp.scale, 20* gp.scale);
+        }
+
+
         public void draw (Graphics2D g2){
             drawScore(g2);
             drawStamina(g2);
             drawCharge(g2);
             drawHealth(g2);
             drawScoreboard(g2);
+            drawTimer(g2);
         }
     }

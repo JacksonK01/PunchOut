@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
 
+
     public final int tileSize = 16;
     public final int scale = 3;
 
@@ -27,6 +28,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     //Corresponds with the current enemy the player will fight
     int currentLevel = 1;
+
+    public static int timeElapsed = 0;
+    public static int totalTime = 180;
 
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
