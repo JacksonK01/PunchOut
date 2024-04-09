@@ -82,7 +82,7 @@ public class UI {
         }
         public void drawCharge(Graphics2D g2){
             //int charge = gp.player.;
-            int charge = 10;
+            int charge = 0;
             String scoreStr = Integer.toString(charge);
             for (int i = scoreStr.length()-1; i >= 0; i--) {
                 int digit = Character.getNumericValue(scoreStr.charAt(i));
@@ -143,14 +143,15 @@ public class UI {
                 GamePanel.timeElapsed++;
             }
             counter++;
-            // get time in min:seconds format counting down from total seconds
-            int secondsRemaining = GamePanel.totalTime - GamePanel.timeElapsed;
-            int minutes = secondsRemaining / 60;
-            int seconds = secondsRemaining % 60;
-            String time = String.format("%02d:%02d", minutes, seconds);
+            // get time in min:seconds format
+            int minutes = GamePanel.timeElapsed / 60;
+            int seconds = GamePanel.timeElapsed % 60;
+            String time = String.format("%01d:%02d", minutes, seconds);
             g2.setFont(customFont);
             g2.setColor(Color.WHITE);
-            g2.drawString(time, 207* gp.scale, 20* gp.scale);
+            //make font size bigger
+            g2.setFont(customFont.deriveFont(22f));
+            g2.drawString(time, 209* gp.scale, 20* gp.scale+1);
         }
 
 
