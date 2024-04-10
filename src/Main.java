@@ -1,4 +1,5 @@
 import gamepanel.GamePanel;
+import screens.Transitions;
 
 import javax.swing.*;
 
@@ -10,8 +11,9 @@ public class Main {
         window.setResizable(false);
         window.setTitle("Punch Out");
 
+        Transitions transitions = new Transitions(window);
         GamePanel gamePanel = new GamePanel();
-        window.setContentPane(gamePanel);
+        window.setContentPane(transitions);
         window.pack();
 
         window.setLocationRelativeTo(null);
