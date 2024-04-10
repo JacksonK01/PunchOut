@@ -13,27 +13,23 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Player extends Entity {
-    BufferedImage spriteSheet;
 
-    //These are purely for loading images in from the sprite sheet
-    final int SPRITE_WIDTH = 25;
-    final int SPRITE_HEIGHT = 62;
-    PlayerState currentState = PlayerState.IDLE;
-    int cooldown;
+    private PlayerState currentState = PlayerState.IDLE;
+    private int cooldown;
 
-    GamePanel gp;
+    final private GamePanel gp;
 
-    Animation dodgeRight, dodgeLeft;
-    int dodgeFrameCounter = 0;
-    final int DODGE_FRAMES = 20;
-    final int DODGE_SPEED = 5;
+    private final Animation dodgeRight, dodgeLeft;
+    private int dodgeFrameCounter = 0;
+    private final int DODGE_FRAMES = 20;
+    private final int DODGE_SPEED = 5;
 
-    Animation jabRight, jabLeft;
-    int jabFrameCounter = 0;
-    final int JAB_FRAMES = 20;
-    final int JAB_SPEED = 2;
+    private final Animation jabRight, jabLeft;
+    private int jabFrameCounter = 0;
+    private final int JAB_FRAMES = 20;
+    private final int JAB_SPEED = 2;
 
-    Animation duck;
+    private Animation duck;
 
     public int score = 0;
     public int testScore = 132020;
@@ -41,14 +37,15 @@ public class Player extends Entity {
     public Player(GamePanel gp) {
 
         this.gp = gp;
-        this.worldX = gp.screenWidth/2 - gp.scaledTileSize/2;
+        this.worldX = GamePanel.screenWidth /2 - GamePanel.scaledTileSize /2;
         this.worldY = 400;
 
-        this.entityWidth = gp.scaledTileSize;
-        this.entityHeight = gp.scaledTileSize * 2;
+        this.entityWidth = 60;
+        this.entityHeight = 110;
 
+        BufferedImage spriteSheet;
         try {
-            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/little_mac/little_mac_spritesheet.png")));
+            spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/little_mac/little_mac_spritesheet.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -56,22 +53,33 @@ public class Player extends Entity {
         this.sprite = spriteSheet.getSubimage(1, 27, 24, 61);
 
         //Here's an exampel of how to add an animation with and without an array
+        //These are purely for loading images in from the sprite sheet
+        int SPRITE_WIDTH = 25;
+        int SPRITE_HEIGHT = 62;
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
-        UtilityTool.scaleImage(a, entityWidth, entityHeight);
+
+        this.idle = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(1)
+                .setFrame(sprite, 0)
+                .setSpeed(0)
+                .setLoop(false)
+                .build();
+
         dodgeLeft = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
                 .setAnimationWithArray(a)
                 .setSpeed(10)
                 .setLoop(false)
-                .setOwnerEntity(this)
                 .build();
 
         dodgeRight = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
                 .setAnimationWithoutArray(2)
                 .setFrame(spriteSheet.getSubimage(100, 100, SPRITE_WIDTH, SPRITE_HEIGHT), 0)
                 .setFrame(spriteSheet.getSubimage(125, 100, SPRITE_WIDTH, SPRITE_HEIGHT), 1)
                 .setSpeed(10)
                 .setLoop(false)
-                .setOwnerEntity(this)
                 .build();
 
         jabRight = AnimationBuilder.newInstance()
@@ -92,6 +100,8 @@ public class Player extends Entity {
                 .setLoop(false)
                 .setOwnerEntity(this)
                 .build();
+
+        this.toPlay = idle;
     }
 
     public void addCoolDown(int num) {
@@ -185,14 +195,23 @@ public class Player extends Entity {
     public boolean isReadyForAction() {return currentState == PlayerState.IDLE && cooldown == 0;}
 
     @Override
-    public void update() {
+    public void introStateUpdate() {
+
+    }
+
+    @Override
+    public void fightStateUpdate() {
         if((gp.keyH.rightPressed && isReadyForAction()) || isDodgeRight()) {
+            toPlay = dodgeRight;
             dodgeRight();
         } else if((gp.keyH.leftPressed && isReadyForAction()) || isDodgeLeft()) {
+            toPlay = dodgeLeft;
             dodgeLeft();
         } else if((gp.keyH.rightArm && isReadyForAction()) || isJabRight()) {
+            toPlay = jabRight;
             jabRight();
         } else if((gp.keyH.leftArm && isReadyForAction()) || isJabLeft()) {
+            toPlay = jabLeft;
             jabLeft();
         }
 
@@ -201,29 +220,12 @@ public class Player extends Entity {
         }
     }
 
-    @Override
-    public void draw(Graphics2D g2) {
-        //TODO fix using .reset() and find a way to naturally reset the animation
-        if(isDodgeRight()) {
-            dodgeRight.drawAnimation(g2);
-        } else if(isDodgeLeft()) {
-            dodgeLeft.drawAnimation(g2);
-        } else if(isJabRight()) {
-            jabRight.drawAnimation(g2);
-        } else if(isJabLeft()) {
-            jabLeft.drawAnimation(g2);
-        }
-        else {
-            g2.drawImage(this.sprite, this.worldX, this.worldY, this.entityWidth, this.entityHeight, null);
-            animationRegistryReset();
-        }
-    }
-
     public enum PlayerState {
         IDLE,
         DODGE_RIGHT,
         DODGE_LEFT,
         JAB_RIGHT,
-        JAB_LEFT;
+        JAB_LEFT,
+        OUT_OF_STAMINA;
     }
 }

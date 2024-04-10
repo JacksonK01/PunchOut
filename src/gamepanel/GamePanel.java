@@ -3,26 +3,26 @@ package gamepanel;
 import entity.Entity;
 import entity.GlassJoe;
 import entity.Player;
+import event.EventManager;
 import input.KeyHandler;
 import scene.SceneRenderer;
 import ui.UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
 
 
-    public final int tileSize = 16;
-    public final int scale = 3;
+    public final static int tileSize = 16;
+    public final static int scale = 3;
 
     //One tile will be 48x48
-    public final int scaledTileSize = tileSize*scale;
+    public final static int scaledTileSize = tileSize*scale;
 
     //16 Tile width, 12 tile height
-    public final int screenWidth = scaledTileSize * 16;
-    public final int screenHeight = scaledTileSize * 12;
+    public final static int screenWidth = scaledTileSize * 16;
+    public final static int screenHeight = scaledTileSize * 12;
 
     final int FPS = 60;
 
@@ -36,7 +36,8 @@ public class GamePanel extends JPanel implements Runnable {
     public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
     public Player player = new Player(this);
-    Entity opponent;
+    public Entity opponent;
+    EventManager eventManager = new EventManager(this);
     UI ui = new UI(this);
 
     public GamePanel() {
@@ -85,10 +86,10 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        eventManager.update();
         ui.update();
         player.update();
         opponent.update();
-
     }
 
     //The order of drawing is important
