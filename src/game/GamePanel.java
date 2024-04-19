@@ -1,28 +1,28 @@
-package gamepanel;
+package game;
 
 import entity.Entity;
 import entity.GlassJoe;
 import entity.Player;
+import event.EventManager;
 import input.KeyHandler;
 import scene.SceneRenderer;
 import ui.UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
 public class GamePanel extends JPanel implements Runnable {
 
 
-    public final int tileSize = 16;
-    public final int scale = 3;
+    public final static int tileSize = 16;
+    public final static int scale = 3;
 
     //One tile will be 48x48
-    public final int scaledTileSize = tileSize*scale;
+    public final static int scaledTileSize = tileSize*scale;
 
     //16 Tile width, 12 tile height
-    public final int screenWidth = scaledTileSize * 16;
-    public final int screenHeight = scaledTileSize * 12;
+    public final static int screenWidth = scaledTileSize * 16;
+    public final static int screenHeight = scaledTileSize * 12;
 
     final int FPS = 60;
 
@@ -33,21 +33,21 @@ public class GamePanel extends JPanel implements Runnable {
     public static int totalTime = 180;
 
     Thread gameThread;
-    public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
-    public Player player = new Player(this);
-    Entity opponent;
+    public GameEngine engine = new GameEngine(this);
+
     UI ui = new UI(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLUE);
         this.setDoubleBuffered(true);
-        this.addKeyListener(this.keyH);
+        this.addKeyListener(this.engine.getKeyHandler());
         this.setFocusable(true);
+    }
 
-        //First opponent is always glass joe
-        this.opponent = new GlassJoe();
+    public GameEngine getGameEngine() {
+        return engine;
     }
 
     public void startGameThread() {
@@ -86,9 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         ui.update();
-        player.update();
-        opponent.update();
-
+        engine.update();
     }
 
     //The order of drawing is important
@@ -99,8 +97,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         sceneRenderer.draw(g2);
         ui.draw(g2);
-        opponent.draw(g2);
-        player.draw(g2);
+        engine.draw(g2);
 
         g2.dispose();
     }

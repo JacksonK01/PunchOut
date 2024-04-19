@@ -1,4 +1,4 @@
-import gamepanel.GamePanel;
+import game.GamePanel;
 import screens.Transitions;
 
 import javax.swing.*;
@@ -13,7 +13,8 @@ public class Main {
 
         Transitions transitions = new Transitions(window);
         GamePanel gamePanel = new GamePanel();
-        window.setContentPane(transitions);
+        //window.setContentPane(transitions);
+        window.setContentPane(gamePanel);
         window.pack();
 
         window.setLocationRelativeTo(null);

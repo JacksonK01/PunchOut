@@ -1,7 +1,7 @@
 package screens;
 import java.awt.*;
 import javax.swing.*;
-import gamepanel.GamePanel;
+
 // make a new screen for the transitions, will be switched to when round or fight ends
 public class Transitions extends JPanel {
     JFrame window;

@@ -6,9 +6,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Animation {
-    BufferedImage[] frames;
+    private final BufferedImage[] frames;
     private final int speed;
-    private int animationEndTime;
+    private final int animationEndTime;
     private final boolean loop;
     private int x, y;
     private int width, height;
@@ -41,8 +41,13 @@ public class Animation {
         }
         if (spriteCounter > speed) {
             currentFrame++;
-            if(currentFrame >= frames.length - 1) {
-                isAnimationDone = true;
+            if(currentFrame >= frames.length) {
+                if(loop) {
+                    currentFrame = 0;
+                } else {
+                    isAnimationDone = true;
+                    currentFrame--;
+                }
             }
             spriteCounter = 0;
         }
@@ -52,14 +57,6 @@ public class Animation {
         } else {
             g2.drawImage(this.frames[currentFrame], x, y, null);
         }
-
-        if(loop) {
-            isAnimationDone = false;
-        }
-    }
-
-    public BufferedImage getFrame(int i) {
-        return frames[i];
     }
 
     public void setFrame(int i, BufferedImage image) {
@@ -86,6 +83,10 @@ public class Animation {
     public void setPosAndDrawAnimation(int x, int y, Graphics2D g2) {
         setPos(x, y);
         drawAnimation(g2);
+    }
+
+    public int getLength() {
+        return this.frames.length;
     }
 
     //I'd really like to find a natural way to end the animation
