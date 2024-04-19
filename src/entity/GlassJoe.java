@@ -2,14 +2,11 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
-import gamepanel.GamePanel;
 import utility.UtilityTool;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class GlassJoe extends Entity {
@@ -38,7 +35,7 @@ public class GlassJoe extends Entity {
 
         walk = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
-                .setAnimationWithArray(UtilityTool.createArrayForAnimation(spriteSheet, 6, 0, 32, 112, this.entityWidth, this.entityHeight))
+                .setAnimationWithArray(UtilityTool.createArrayForAnimation(spriteSheet, 6, 0, 0, 32, 112, this.entityWidth, this.entityHeight))
                 .setSpeed(10)
                 .setLoop(true)
                 .build();
@@ -50,16 +47,29 @@ public class GlassJoe extends Entity {
                 .setSpeed(0)
                 .build();
 
+        BufferedImage[] temp = UtilityTool.createArrayForAnimation(spriteSheet, 3, 100, 117, 32, 100, this.entityWidth, this.entityHeight);
+
         this.idle = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
+                .setAnimationWithoutArray(4)
+                .setFrame(temp[0], 0)
+                .setFrame(temp[1], 1)
+                .setFrame(temp[2], 2)
+                .setFrame(temp[1], 3)
+                .setSpeed(10)
+                .setLoop(true)
+                .build();
+
+        this.onHit = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
                 .setAnimationWithoutArray(1)
-                .setFrame(sprite, 0)
+                .setFrame(spriteSheet.getSubimage(265, 114, 32, 100), 0)
                 .setSpeed(0)
                 .setLoop(false)
                 .build();
 
-
         this.toPlay = startPose;
+
     }
     public void updateIntro() {
         if (worldX > X_REST_POINT) {
@@ -87,5 +97,10 @@ public class GlassJoe extends Entity {
     @Override
     public void fightStateUpdate() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "Glass Joe";
     }
 }

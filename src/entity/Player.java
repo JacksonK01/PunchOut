@@ -2,19 +2,17 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
-import gamepanel.GamePanel;
-import utility.UtilityTool;
+import event.EventHandler;
+import game.GamePanel;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 
 public class Player extends Entity {
 
-    private PlayerState currentState = PlayerState.IDLE;
+    private PlayerState playerState = PlayerState.IDLE;
     private int cooldown;
 
     final private GamePanel gp;
@@ -34,9 +32,12 @@ public class Player extends Entity {
     public int score = 0;
     public int testScore = 132020;
 
-    public Player(GamePanel gp) {
+    private final EventHandler attackEvent;
+
+    public Player(GamePanel gp, EventHandler attackEvent) {
 
         this.gp = gp;
+        this.attackEvent = attackEvent;
         this.worldX = GamePanel.screenWidth /2 - GamePanel.scaledTileSize /2;
         this.worldY = 400;
 
@@ -86,7 +87,7 @@ public class Player extends Entity {
                 .setAnimationWithoutArray(2)
                 .setFrameAndSize(spriteSheet.getSubimage(314, 23, SPRITE_WIDTH + 4, SPRITE_HEIGHT), entityWidth + 4 * gp.scale, entityHeight, 0)
                 .setFrameAndSize(spriteSheet.getSubimage(350, 17, SPRITE_WIDTH, SPRITE_HEIGHT + 10), entityWidth, entityHeight + 7 * gp.scale, 1)
-                .setSpeed(10)
+                .setSpeed(12)
                 .setLoop(false)
                 .setOwnerEntity(this)
                 .build();
@@ -96,7 +97,7 @@ public class Player extends Entity {
                 .setFrameAndSize(spriteSheet.getSubimage(130, 23, SPRITE_WIDTH + 3, SPRITE_HEIGHT), entityWidth + 3 * gp.scale, entityHeight, 0)
                 .setFrameAndSize(spriteSheet.getSubimage(163, 23, SPRITE_WIDTH + 3, SPRITE_HEIGHT), entityWidth + 3 * gp.scale, entityHeight, 1)
                 .setFrameAndSize(spriteSheet.getSubimage(193, 19, SPRITE_WIDTH, SPRITE_HEIGHT + 7), entityWidth, entityHeight + (3 * gp.scale), 2)
-                .setSpeed(6)
+                .setSpeed(8)
                 .setLoop(false)
                 .setOwnerEntity(this)
                 .build();
@@ -104,18 +105,18 @@ public class Player extends Entity {
         this.toPlay = idle;
     }
 
-    public void addCoolDown(int num) {
+    private void addCoolDown(int num) {
         this.cooldown += num;
     }
 
-    public void setCoolDown(int num) {
+    private void setCoolDown(int num) {
         this.cooldown = num;
     }
 
 
     //dodgeFrameCounter starts at 0 before this runs
-    public void dodgeRight() {
-        currentState = PlayerState.DODGE_RIGHT;
+    private void dodgeRight() {
+        playerState = PlayerState.DODGE_RIGHT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX += this.DODGE_SPEED;
         } else {
@@ -124,14 +125,14 @@ public class Player extends Entity {
         dodgeFrameCounter++;
 
         if(dodgeFrameCounter >= DODGE_FRAMES) {
-            currentState = PlayerState.IDLE;
+            playerState = PlayerState.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
     }
 
-    public void dodgeLeft() {
-        currentState = PlayerState.DODGE_LEFT;
+    private void dodgeLeft() {
+        playerState = PlayerState.DODGE_LEFT;
         if(dodgeFrameCounter < DODGE_FRAMES/2) {
             this.worldX -= this.DODGE_SPEED;
         } else {
@@ -140,14 +141,14 @@ public class Player extends Entity {
         dodgeFrameCounter++;
 
         if(dodgeFrameCounter >= DODGE_FRAMES) {
-            currentState = PlayerState.IDLE;
+            playerState = PlayerState.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
     }
 
-    public void jabRight() {
-        currentState = PlayerState.JAB_RIGHT;
+    private void jabRight() {
+        playerState = PlayerState.JAB_RIGHT;
         if(jabFrameCounter < JAB_FRAMES/2) {
             this.worldY -= JAB_SPEED;
             this.worldX -= JAB_SPEED/2;
@@ -158,13 +159,13 @@ public class Player extends Entity {
         jabFrameCounter++;
         if(jabFrameCounter >= JAB_FRAMES) {
             jabFrameCounter = 0;
-            currentState = PlayerState.IDLE;
+            playerState = PlayerState.IDLE;
             addCoolDown(6);
         }
     }
 
-    public void jabLeft() {
-        currentState = PlayerState.JAB_LEFT;
+    private void jabLeft() {
+        playerState = PlayerState.JAB_LEFT;
         if(jabFrameCounter < JAB_FRAMES/2) {
             this.worldY -= JAB_SPEED;
             this.worldX += JAB_SPEED/2;
@@ -175,44 +176,60 @@ public class Player extends Entity {
         jabFrameCounter++;
         if(jabFrameCounter >= JAB_FRAMES) {
             jabFrameCounter = 0;
-            currentState = PlayerState.IDLE;
+            playerState = PlayerState.IDLE;
             addCoolDown(6);
         }
     }
 
-    public boolean isDodgeRight() {
-        return currentState == PlayerState.DODGE_RIGHT;
+    private boolean isDodgeRight() {
+        return playerState == PlayerState.DODGE_RIGHT;
     }
 
-    public boolean isDodgeLeft() {
-        return currentState == PlayerState.DODGE_LEFT;
+    private boolean isDodgeLeft() {
+        return playerState == PlayerState.DODGE_LEFT;
     }
 
-    public boolean isJabRight() {return currentState == PlayerState.JAB_RIGHT;}
+    private boolean isJabRight() {
+        return playerState == PlayerState.JAB_RIGHT;
+    }
 
-    public boolean isJabLeft() {return currentState == PlayerState.JAB_LEFT;}
+    private boolean isJabLeft() {
+        return playerState == PlayerState.JAB_LEFT;
+    }
 
-    public boolean isReadyForAction() {return currentState == PlayerState.IDLE && cooldown == 0;}
+    private boolean isReadyForAction() {
+        return playerState == PlayerState.IDLE && cooldown == 0;
+    }
 
     @Override
-    public void introStateUpdate() {
+    protected void introStateUpdate() {
 
     }
+//Event listener, class to stor
+    /*
 
+     */
     @Override
-    public void fightStateUpdate() {
+    protected void fightStateUpdate() {
+        setCurrentStateIdle();
         if((gp.keyH.rightPressed && isReadyForAction()) || isDodgeRight()) {
             toPlay = dodgeRight;
             dodgeRight();
+            setCurrentStateDodging();
         } else if((gp.keyH.leftPressed && isReadyForAction()) || isDodgeLeft()) {
             toPlay = dodgeLeft;
             dodgeLeft();
+            setCurrentStateDodging();
         } else if((gp.keyH.rightArm && isReadyForAction()) || isJabRight()) {
             toPlay = jabRight;
+            attackEvent.execute(this, 10);
             jabRight();
+            setCurrentStateAttacking();
         } else if((gp.keyH.leftArm && isReadyForAction()) || isJabLeft()) {
             toPlay = jabLeft;
+            attackEvent.execute(this, 10);
             jabLeft();
+            setCurrentStateAttacking();
         }
 
         if(cooldown > 0) {
@@ -220,7 +237,12 @@ public class Player extends Entity {
         }
     }
 
-    public enum PlayerState {
+    @Override
+    public String toString() {
+        return "Player";
+    }
+
+    private enum PlayerState {
         IDLE,
         DODGE_RIGHT,
         DODGE_LEFT,

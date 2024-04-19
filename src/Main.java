@@ -1,4 +1,4 @@
-import gamepanel.GamePanel;
+import game.GamePanel;
 import screens.Transitions;
 
 import javax.swing.*;

@@ -1,6 +1,6 @@
 package event;
 
-import gamepanel.GamePanel;
+import game.GamePanel;
 
 public class EventManager {
     private EventStates currentState;
@@ -12,12 +12,12 @@ public class EventManager {
         this.gp = gp;
         timer = 0;
 
-        gp.player.setEventState(currentState);
+        gp.engine.player.setEventState(currentState);
     }
 
     private void setGlobalEventState() {
-        gp.player.setEventState(currentState);
-        gp.opponent.setEventState(currentState);
+        gp.engine.player.setEventState(currentState);
+        gp.engine.opponent.setEventState(currentState);
     }
 
     private void runIntroEvent() {

@@ -1,7 +1,7 @@
 package entity.animation;
 
 import entity.Entity;
-import gamepanel.GamePanel;
+import game.GamePanel;
 import utility.UtilityTool;
 
 import java.awt.image.BufferedImage;

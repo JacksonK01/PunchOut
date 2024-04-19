@@ -1,4 +1,4 @@
-package gamepanel;
+package game;
 
 import entity.Entity;
 import entity.GlassJoe;
@@ -35,8 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
-    public Player player = new Player(this);
-    public Entity opponent;
+    public GameEngine engine = new GameEngine(this);
     EventManager eventManager = new EventManager(this);
     UI ui = new UI(this);
 
@@ -46,9 +45,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(this.keyH);
         this.setFocusable(true);
-
-        //First opponent is always glass joe
-        this.opponent = new GlassJoe();
     }
 
     public void startGameThread() {
@@ -88,8 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         eventManager.update();
         ui.update();
-        player.update();
-        opponent.update();
+        engine.update();
     }
 
     //The order of drawing is important
@@ -100,8 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         sceneRenderer.draw(g2);
         ui.draw(g2);
-        opponent.draw(g2);
-        player.draw(g2);
+        engine.draw(g2);
 
         g2.dispose();
     }

@@ -28,11 +28,13 @@ public class UtilityTool {
 
     //This method is a very specific use, which is when the sprite sheet has many sprites in a row, and this follows the common pattern for grabbing the sprites
     //This does not span the y axis.
-    public static BufferedImage[] createArrayForAnimation(BufferedImage spriteSheet, int sizeOfArr, int startX, int xWidth, int yHeight, int scaleWidth, int scaleHeight) {
+    public static BufferedImage[] createArrayForAnimation(BufferedImage spriteSheet, int sizeOfArr, int startX, int startY, int xWidth, int yHeight, int scaleWidth, int scaleHeight) {
         BufferedImage[] arr = new BufferedImage[sizeOfArr];
+        int xOffset = 0;
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = spriteSheet.getSubimage((startX * xWidth) + startX, 0, xWidth, yHeight);
+            arr[i] = spriteSheet.getSubimage(startX + (xOffset * xWidth), startY, xWidth, yHeight);
             startX++;
+            xOffset++;
         }
         scaleImage(arr, scaleWidth, scaleHeight);
         return arr;

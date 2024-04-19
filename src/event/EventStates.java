@@ -1,7 +1,7 @@
 package event;
 
 public enum EventStates {
-    INTRO(600),
+    INTRO(450),
     FIGHT(-1),
     DAMAGED(-1),
     VICTORY(-1),

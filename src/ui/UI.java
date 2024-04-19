@@ -1,7 +1,6 @@
 package ui;
 
-import entity.Player;
-import gamepanel.GamePanel;
+import game.GamePanel;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class UI {
         }
         public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
-            int score = gp.player.testScore;
+            int score = gp.engine.player.testScore;
 
             String scoreStr = Integer.toString(score);
 
