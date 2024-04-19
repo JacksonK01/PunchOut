@@ -27,8 +27,8 @@ public class UI {
 
         try {
             //numbers are in the same file as the sprite sheet for the boxing ring
-            spriteSheet = ImageIO.read(getClass().getResource("/ui/ui.png"));
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Resource/ui/punch-out-nes.ttf")).deriveFont(20f);
+            spriteSheet = ImageIO.read(getClass().getResource("/textures/ui/ui.png"));
+            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Resource/textures/ui/punch-out-nes.ttf")).deriveFont(20f);
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,7 @@ public class UI {
         }
         public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
-            int score = gp.engine.player.testScore;
+            int score = gp.getGameEngine().getPlayer().testScore;
 
             String scoreStr = Integer.toString(score);
 

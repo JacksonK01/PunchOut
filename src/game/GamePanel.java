@@ -33,18 +33,21 @@ public class GamePanel extends JPanel implements Runnable {
     public static int totalTime = 180;
 
     Thread gameThread;
-    public KeyHandler keyH = new KeyHandler();
     public SceneRenderer sceneRenderer = new SceneRenderer(this);
     public GameEngine engine = new GameEngine(this);
-    EventManager eventManager = new EventManager(this);
+
     UI ui = new UI(this);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.BLUE);
         this.setDoubleBuffered(true);
-        this.addKeyListener(this.keyH);
+        this.addKeyListener(this.engine.getKeyHandler());
         this.setFocusable(true);
+    }
+
+    public GameEngine getGameEngine() {
+        return engine;
     }
 
     public void startGameThread() {
@@ -82,7 +85,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-        eventManager.update();
         ui.update();
         engine.update();
     }

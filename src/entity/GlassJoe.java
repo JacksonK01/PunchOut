@@ -21,7 +21,7 @@ public class GlassJoe extends Entity {
     public GlassJoe() {
         BufferedImage spriteSheet = null;
         try {
-            spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/glass_joe/glassjoe.png")));
+            spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/entities/glass_joe/glassjoe.png")));
         } catch (IOException e) {
             e.printStackTrace();
         }

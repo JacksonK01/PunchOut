@@ -1,6 +1,7 @@
 package entity;
 
 import entity.animation.Animation;
+import event.EventManager;
 import event.EventStates;
 import game.GamePanel;
 
@@ -14,7 +15,6 @@ public abstract class Entity {
     protected int worldX, worldY;
     protected BufferedImage sprite;
     protected ArrayList<Animation> animationRegistry = new ArrayList<>();
-    private EventStates eventState = EventStates.INTRO;
     protected EntityStates currentState = EntityStates.IDLE;
     //This is used for objects like Animation
     protected int entityWidth;
@@ -61,10 +61,6 @@ public abstract class Entity {
         );
     }
 
-    public void setEventState(EventStates state) {
-        this.eventState = state;
-    }
-
     public void setCurrentStateIdle() {
         this.currentState = EntityStates.IDLE;
     }
@@ -106,9 +102,9 @@ public abstract class Entity {
 
     public void update() {
         toPlay = idle;
-        if (eventState == EventStates.INTRO) {
+        if (EventManager.getGlobalEventState() == EventStates.INTRO) {
             introStateUpdate();
-        } else if (eventState == EventStates.FIGHT) {
+        } else if (EventManager.getGlobalEventState() == EventStates.FIGHT) {
             fightStateUpdate();
             if(isHitStun()) {
                 onHit();
@@ -128,7 +124,7 @@ public abstract class Entity {
         setCurrentStateHitStun();
         hitStunFrames++;
         toPlay = onHit;
-        if (hitStunFrames > 15) {
+        if (hitStunFrames > 30) {
             hitStunFrames = 0;
             setCurrentStateIdle();
         }

@@ -8,7 +8,7 @@ public enum EventStates {
     LOST(-1),
     KNOCKOUT(-1);
 
-    private int eventDuration;
+    private final int eventDuration;
 
     EventStates(int timer) {
         this.eventDuration = timer;

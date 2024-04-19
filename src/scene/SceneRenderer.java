@@ -16,7 +16,7 @@ public class SceneRenderer {
     public SceneRenderer(GamePanel gp) {
         this.gp = gp;
         try {
-            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/scenes/boxing_ring/boxing_rings2.png")));
+            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/textures/scenes/boxing_ring/boxing_rings2.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
