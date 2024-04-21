@@ -5,6 +5,10 @@ import entity.Entity;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Represents an animation sequence for entities in the Punch Out game.
+ * Manages the frames, speed, and drawing of the animation.
+ */
 public class Animation {
     private final BufferedImage[] frames;
     private final int speed;
@@ -20,6 +24,10 @@ public class Animation {
     //Only if needed
     Entity ownerEntity;
 
+    /**
+     * Constructs a new Animation with the specified builder parameters.
+     * @param builder The builder containing animation parameters.
+     */
     public Animation(AnimationBuilder builder) {
         this.frames = builder.frames;
         this.speed = builder.speed;
@@ -34,7 +42,10 @@ public class Animation {
             ownerEntity.addAnimationToRegistry(this);
         }
     }
-
+    /**
+     * Draws the animation on the provided graphics context.
+     * @param g2 The graphics context.
+     */
     public void drawAnimation(Graphics2D g2) {
         if(!isAnimationDone) {
             spriteCounter++;
@@ -58,38 +69,61 @@ public class Animation {
             g2.drawImage(this.frames[currentFrame], x, y, null);
         }
     }
-
+    /**
+     * Sets the frame at the specified index with the given image.
+     * @param i The index of the frame.
+     * @param image The image to set.
+     */
     public void setFrame(int i, BufferedImage image) {
         if (i >= 0 && i < frames.length) {
             this.frames[i] = image;
         }
     }
-
+    /**
+     * Sets the current frame index.
+     * @param i The index to set.
+     */
     public void setCurrentFrameIndex(int i) {
         if (i >= 0 && i < frames.length) {
             this.currentFrame = i;
         }
     }
-
+    /**
+     * Sets the position of the animation.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     */
     public void setPos(int x, int y) {
         this.x = x;
         this.y = y;
     }
-
+    /**
+     * Sets the owner entity of the animation.
+     * @param entity The owner entity.
+     */
     public void setOwnerEntity(Entity entity) {
         this.ownerEntity = entity;
     }
-
+    /**
+     * Sets the position and draws the animation on the provided graphics context.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @param g2 The graphics context.
+     */
     public void setPosAndDrawAnimation(int x, int y, Graphics2D g2) {
         setPos(x, y);
         drawAnimation(g2);
     }
-
+    /**
+     * Gets the length of the animation frames.
+     * @return The length of the frames array.
+     */
     public int getLength() {
         return this.frames.length;
     }
-
-    //I'd really like to find a natural way to end the animation
+    /**
+     * Resets the animation to its initial state.
+     */
     public void reset() {
         this.spriteCounter = 0;
         this.currentFrame = 0;

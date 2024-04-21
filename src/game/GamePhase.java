@@ -1,6 +1,6 @@
-package event;
+package game;
 
-public enum EventStates {
+public enum GamePhase {
     INTRO(450),
     FIGHT(-1),
     DAMAGED(-1),
@@ -10,11 +10,15 @@ public enum EventStates {
 
     private final int eventDuration;
 
-    EventStates(int timer) {
+    GamePhase(int timer) {
         this.eventDuration = timer;
     }
 
     public int getEventDuration() {
         return this.eventDuration;
+    }
+
+    public boolean doesEventHaveTimer() {
+        return getEventDuration() >= 0;
     }
 }

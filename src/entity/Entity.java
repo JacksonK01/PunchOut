@@ -1,19 +1,27 @@
 package entity;
 
 import entity.animation.Animation;
-import event.EventManager;
-import event.EventStates;
+import game.GamePhaseManager;
+import game.GamePhase;
 import game.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-//The mother class for all entities
+/**
+ * The mother class for all entities in the Punch Out game.
+ * Provides common functionality and properties for entities.
+ */
 public abstract class Entity {
     protected int health;
     protected int worldX, worldY;
     protected BufferedImage sprite;
+    /**
+     * A list to store animations associated with this entity.
+     * Each animation represents a specific action or state of the entity.
+     * Animation will automatically be added to the registry if an owner entity is assigned to the animation.
+     */
     protected ArrayList<Animation> animationRegistry = new ArrayList<>();
     protected EntityStates currentState = EntityStates.IDLE;
     //This is used for objects like Animation
@@ -47,11 +55,17 @@ public abstract class Entity {
     public int getHealth() {
         return this.health;
     }
-
+    /**
+     * Adds the given animation to the animation registry of the entity.
+     * @param a The animation to add to the registry.
+     */
     public void addAnimationToRegistry(Animation a) {
         animationRegistry.add(a);
     }
-
+    /**
+     * Resets all animations in the registry except for the specified animation.
+     * @param dontResetThisAnimation The animation to exclude from the reset operation.
+     */
     public void animationRegistryReset(Animation dontResetThisAnimation) {
         animationRegistry.forEach(animation -> {
                     if (animation != dontResetThisAnimation) {
@@ -99,18 +113,24 @@ public abstract class Entity {
             this.currentState = EntityStates.KNOCKED_OUT;
         }
     }
-
+    /**
+     * Updates the entity's state and animations based on the current game state.
+     */
     public void update() {
         toPlay = idle;
-        if (EventManager.getGlobalEventState() == EventStates.INTRO) {
+        if (GamePhaseManager.getGlobalEventState() == GamePhase.INTRO) {
             introStateUpdate();
-        } else if (EventManager.getGlobalEventState() == EventStates.FIGHT) {
+        } else if (GamePhaseManager.getGlobalEventState() == GamePhase.FIGHT) {
             fightStateUpdate();
             if(isHitStun()) {
                 onHit();
             }
         }
     }
+    /**
+     * Draws the entity on the provided graphics context.
+     * @param g2 The graphics context.
+     */
     public void draw(Graphics2D g2) {
         toPlay.drawAnimation(g2);
         animationRegistryReset(toPlay);
@@ -119,7 +139,9 @@ public abstract class Entity {
     protected abstract void introStateUpdate();
 
     protected abstract void fightStateUpdate();
-
+    /**
+     * Handles logic when the entity is hit by an attack.
+     */
     public void onHit() {
         setCurrentStateHitStun();
         hitStunFrames++;
@@ -128,8 +150,10 @@ public abstract class Entity {
             hitStunFrames = 0;
             setCurrentStateIdle();
         }
-    };
-
+    }
+    /**
+     * Enumerates the possible states for the entity.
+     */
     private enum EntityStates {
         IDLE,
         ATTACKING,
