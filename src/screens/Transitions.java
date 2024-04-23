@@ -12,5 +12,14 @@ public class Transitions extends JPanel {
         this.setFocusable(true);
         this.window = window;
     }
+    //TODO: Get title screen
+
+
+
+    //TODO: Get between round screen
+
+
+
+    //TODO: Get game over screen
 
 }

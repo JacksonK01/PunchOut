@@ -5,6 +5,7 @@ import entity.animation.AnimationBuilder;
 import game.events.EventHandler;
 import game.GamePanel;
 import input.KeyHandler;
+import utility.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -20,7 +21,7 @@ public class Player extends Entity {
     private ActionState actionState = ActionState.IDLE;
     private int cooldown;
 
-    private final Animation dodgeRight, dodgeLeft;
+    private final Animation dodgeRight, dodgeLeft, block;
     private int dodgeFrameCounter = 0;
     private final int DODGE_FRAMES = 20;
     private final int DODGE_SPEED = 5;
@@ -29,6 +30,10 @@ public class Player extends Entity {
     private int jabFrameCounter = 0;
     private final int JAB_FRAMES = 20;
     private final int JAB_SPEED = 2;
+    private int blockFrameCounter = 0;
+    private final int BLOCK_FRAMES = 30;
+    private final int BLOCK_SPEED = 2;
+
 
     private Animation duck;
 
@@ -68,6 +73,7 @@ public class Player extends Entity {
         int SPRITE_WIDTH = 25;
         int SPRITE_HEIGHT = 62;
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
+        BufferedImage[] blockAnim = UtilityTool.createArrayForAnimation(spriteSheet, 2, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
 
         this.idle = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
@@ -109,6 +115,12 @@ public class Player extends Entity {
                 .setFrame(spriteSheet.getSubimage(163, 23, SPRITE_WIDTH + 3, SPRITE_HEIGHT), 1)
                 .setFrame(spriteSheet.getSubimage(193, 19, SPRITE_WIDTH, SPRITE_HEIGHT + 7), 2)
                 .setSpeed(8)
+                .setLoop(false)
+                .build();
+        block = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithArray(blockAnim)
+                .setSpeed(10)
                 .setLoop(false)
                 .build();
 
@@ -191,6 +203,16 @@ public class Player extends Entity {
         }
     }
 
+    private void block(){
+        actionState = ActionState.BLOCK;
+        blockFrameCounter++;
+        if(!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES){
+            blockFrameCounter = 0;
+            actionState = ActionState.IDLE;
+            addCoolDown(6);
+        }
+    }
+
     private boolean isDodgeRight() {
         return actionState == ActionState.DODGE_RIGHT;
     }
@@ -209,6 +231,9 @@ public class Player extends Entity {
 
     private boolean isReadyForAction() {
         return actionState == ActionState.IDLE && cooldown == 0;
+    }
+    private boolean isBlocking(){
+        return actionState == ActionState.BLOCK;
     }
 
     @Override
@@ -240,6 +265,14 @@ public class Player extends Entity {
             jabLeft();
             setCurrentStateAttacking();
         }
+        else if((keyH.downPressed && isReadyForAction()) || isBlocking()){
+            toPlay = block;
+            block();
+            setCurrentStateDodging();
+        }
+        else {
+            toPlay = idle;
+        }
 
         if(cooldown > 0) {
             cooldown--;
@@ -262,6 +295,7 @@ public class Player extends Entity {
         DODGE_LEFT,
         JAB_RIGHT,
         JAB_LEFT,
+        BLOCK,
         OUT_OF_STAMINA;
     }
 }
