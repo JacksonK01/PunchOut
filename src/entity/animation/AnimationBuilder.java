@@ -6,6 +6,10 @@ import utility.UtilityTool;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * Builder class for creating Animation objects.
+ * Allows setting various parameters to customize the animation.
+ */
 public class AnimationBuilder {
     BufferedImage[] frames;
     int speed = 0;
@@ -16,12 +20,20 @@ public class AnimationBuilder {
 
     Entity ownerEntity;
 
+    /**
+     * Static factory method to create a new instance of AnimationBuilder.
+     * @return A new instance of AnimationBuilder.
+     */
     public static AnimationBuilder newInstance() {
         return new AnimationBuilder();
     }
 
     private AnimationBuilder() {};
-
+    /**
+     * Sets the animation frames using an array of BufferedImages. This method should not be used if you've already used setAnimationWithoutArray().
+     * @param a The array of BufferedImages representing animation frames.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setAnimationWithArray(BufferedImage[] a) {
         if (this.ownerEntity != null) {
             UtilityTool.scaleImage(a, ownerEntity.getEntityWidth(), ownerEntity.getEntityHeight());
@@ -29,7 +41,11 @@ public class AnimationBuilder {
         this.frames = a;
         return this;
     }
-
+    /**
+     * Sets the total amount of frames for the animation. This method should not be used if you've already used setAnimationWithArray().
+     * @param totalAmountOfFrames The total number of frames.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setAnimationWithoutArray(int totalAmountOfFrames) {
         this.frames = new BufferedImage[totalAmountOfFrames];
         return this;
@@ -54,17 +70,29 @@ public class AnimationBuilder {
         }
         return this;
     }
-
+    /**
+     * Sets the speed of the animation.
+     * @param speed The speed of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setSpeed(int speed) {
         this.speed = speed;
         return this;
     }
-
+    /**
+     * Sets the duration of the animation.
+     * @param animationEndTime The end time of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setAnimationDuration(int animationEndTime) {
         this.animationEndTime = animationEndTime;
         return this;
     }
-
+    /**
+     * Sets whether the animation should loop.
+     * @param isLoop True if the animation should loop, false otherwise.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setLoop(boolean isLoop) {
         this.loop = isLoop;
         return this;
@@ -89,12 +117,18 @@ public class AnimationBuilder {
         this.height = height;
         return this;
     }
-
+    /**
+     * Sets the owner for this animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setOwnerEntity(Entity entity) {
         this.ownerEntity = entity;
         return this;
     }
-
+    /**
+     * Builds and returns the Animation object based on the provided parameters.
+     * @return The created Animation object.
+     */
     public Animation build() {
         return new Animation(this);
     }

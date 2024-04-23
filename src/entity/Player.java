@@ -2,7 +2,7 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
-import event.EventHandler;
+import game.events.EventHandler;
 import game.GamePanel;
 import input.KeyHandler;
 
@@ -11,6 +11,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * Represents the player entity in the Punch Out game.
+ * Handles player actions, animations, and state transitions.
+ */
 public class Player extends Entity {
 
     private ActionState actionState = ActionState.IDLE;
@@ -35,6 +39,12 @@ public class Player extends Entity {
 
     private final KeyHandler keyH;
 
+    /**
+     * Constructs a new Player entity with the specified key handler and attack event handler.
+     * Initializes animations, coordinates, and other properties.
+     * @param keyH The key handler for player input.
+     * @param attackEvent The event handler for player attacks.
+     */
     public Player(KeyHandler keyH, EventHandler attackEvent) {
         this.keyH = keyH;
         this.attackEvent = attackEvent;
@@ -205,7 +215,9 @@ public class Player extends Entity {
     protected void introStateUpdate() {
 
     }
-
+    /**
+     * Updates the player's state and position during the fight state.
+     */
     @Override
     protected void fightStateUpdate() {
         setCurrentStateIdle();
@@ -233,12 +245,17 @@ public class Player extends Entity {
             cooldown--;
         }
     }
-
+    /**
+     * Returns a string representation of the player entity.
+     * @return The string representation of the player.
+     */
     @Override
     public String toString() {
         return "Player";
     }
-
+    /**
+     * Enumerates the possible action states for the player entity.
+     */
     private enum ActionState {
         IDLE,
         DODGE_RIGHT,

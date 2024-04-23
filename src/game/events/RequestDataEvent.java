@@ -1,4 +1,4 @@
-package event;
+package game.events;
 
 import entity.Entity;
 
