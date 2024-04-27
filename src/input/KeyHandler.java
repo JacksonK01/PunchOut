@@ -6,11 +6,15 @@ import java.awt.event.KeyListener;
 //This is only for keyboard inputs
 public class KeyHandler implements KeyListener {
     //Movement
-    public boolean upPressed, rightPressed, downPressed, leftPressed;
+    public boolean upPressed, rightPressed, downPressed, leftPressed, doubleDownPressed;
+    private boolean downReleased = true;
 
     //Attack
     public boolean rightArm, leftArm;
-
+    //Time of last key press for s
+    private long lastSPressTime = 200;
+    //Threshold for double press in milliseconds
+    private static final long DOUBLE_PRESS_THRESHOLD = 200;
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -27,8 +31,17 @@ public class KeyHandler implements KeyListener {
             rightPressed = true;
         }
         if (code == KeyEvent.VK_S) {
-            downPressed = true;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastSPressTime <= DOUBLE_PRESS_THRESHOLD && currentTime - lastSPressTime > 20 && downReleased) {
+                doubleDownPressed = true;
+                System.out.println("Double Pressed");
+            } else {
+                downPressed = true;
+            }
+            lastSPressTime = currentTime;
+            downReleased = false; // Set downReleased to false when 'S' is pressed
         }
+
         if (code == KeyEvent.VK_A) {
             leftPressed = true;
         }
@@ -39,6 +52,8 @@ public class KeyHandler implements KeyListener {
             leftArm = true;
         }
     }
+
+
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -52,6 +67,8 @@ public class KeyHandler implements KeyListener {
         }
         if (code == KeyEvent.VK_S) {
             downPressed = false;
+            doubleDownPressed = false;
+            downReleased = true; // Set downReleased to true when 'S' is released
         }
         if (code == KeyEvent.VK_A) {
             leftPressed = false;
@@ -62,9 +79,5 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_K) {
             leftArm = false;
         }
-    }
-
-    public boolean isAnyMoveKeyPressed() {
-        return upPressed || downPressed || leftPressed || rightPressed;
     }
 }

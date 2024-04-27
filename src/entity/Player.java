@@ -21,7 +21,7 @@ public class Player extends Entity {
     private ActionState actionState = ActionState.IDLE;
     private int cooldown;
 
-    private final Animation dodgeRight, dodgeLeft, block;
+    private final Animation dodgeRight, dodgeLeft, block, dodgeDown;
     private int dodgeFrameCounter = 0;
     private final int DODGE_FRAMES = 20;
     private final int DODGE_SPEED = 5;
@@ -74,6 +74,11 @@ public class Player extends Entity {
         int SPRITE_HEIGHT = 62;
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
         BufferedImage[] blockAnim = UtilityTool.createArrayForAnimation(spriteSheet, 2, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
+        BufferedImage[] tempDodgeDownAnim = UtilityTool.createArrayForAnimation(spriteSheet, 3, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
+        /* TODO: REMEMBER TO TIDY THIS UP */
+        BufferedImage[] dodgeDownAnim = new BufferedImage[1];
+        //dodgeDownAnim[0] = tempDodgeDownAnim[0];
+        dodgeDownAnim[0] = tempDodgeDownAnim[2];
 
         this.idle = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
@@ -120,6 +125,12 @@ public class Player extends Entity {
         block = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(blockAnim)
+                .setSpeed(10)
+                .setLoop(false)
+                .build();
+        dodgeDown = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithArray(dodgeDownAnim)
                 .setSpeed(10)
                 .setLoop(false)
                 .build();
@@ -202,12 +213,21 @@ public class Player extends Entity {
             addCoolDown(6);
         }
     }
-
+    // block method for player that also handles the ducking animation when s is pressed twice
     private void block(){
-        actionState = ActionState.BLOCK;
+        if(keyH.doubleDownPressed){
+            actionState = ActionState.DODGE_DOWN;
+            toPlay = dodgeDown;
+            dodgeDown.setCurrentFrameIndex(0);
+            dodgeFrameCounter++;
+        } else {
+            actionState = ActionState.BLOCK;
+        }
+
         blockFrameCounter++;
-        if(!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES){
+        if(!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
             blockFrameCounter = 0;
+            dodgeFrameCounter = 0;
             actionState = ActionState.IDLE;
             addCoolDown(6);
         }
@@ -234,6 +254,9 @@ public class Player extends Entity {
     }
     private boolean isBlocking(){
         return actionState == ActionState.BLOCK;
+    }
+    private boolean isDodgeDown(){
+        return actionState == ActionState.DODGE_DOWN;
     }
 
     @Override
@@ -270,6 +293,11 @@ public class Player extends Entity {
             block();
             setCurrentStateDodging();
         }
+        else if(isDodgeDown()){
+            toPlay = dodgeDown;
+            block();
+            setCurrentStateDodging();
+        }
         else {
             toPlay = idle;
         }
@@ -296,6 +324,7 @@ public class Player extends Entity {
         JAB_RIGHT,
         JAB_LEFT,
         BLOCK,
+        DODGE_DOWN,
         OUT_OF_STAMINA;
     }
 }
