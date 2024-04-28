@@ -22,7 +22,7 @@ public class GameEngine {
     /** Event handler for generic attacks. */
     private final EventHandler genericAttackEvent = (attacker, damage) -> {
         Entity defender = attacker == player ? opponent : player;
-        if (defender.isIdle() && !defender.isHitStun()) {
+        if ((defender.isIdle() || defender.isAttacking()) && !defender.isHitStun()) {
             defender.doDamage(damage);
             defender.setStateToHit();
             System.out.println(attacker + " attacked " + defender + " for " + damage + " damage");
@@ -57,7 +57,7 @@ public class GameEngine {
     public GameEngine() {
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent);
-        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest);
+        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest);
         this.gamePhaseManager = new GamePhaseManager();
     }
     /**

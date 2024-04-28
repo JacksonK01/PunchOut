@@ -17,8 +17,6 @@ import java.util.Objects;
  * Handles player actions, animations, and state transitions.
  */
 public class Player extends Entity {
-    private int cooldown;
-
     private final Animation dodgeRight, dodgeLeft, block, dodgeDown;
     private int dodgeFrameCounter = 0;
     private final int DODGE_FRAMES = 20;
@@ -121,12 +119,14 @@ public class Player extends Entity {
                 .setSpeed(8)
                 .setLoop(false)
                 .build();
+
         block = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(blockAnim)
                 .setSpeed(10)
                 .setLoop(false)
                 .build();
+
         dodgeDown = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(dodgeDownAnim)
@@ -134,19 +134,16 @@ public class Player extends Entity {
                 .setLoop(false)
                 .build();
 
-        onHit = idle;
+        onHit = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(1)
+                .setFrame(spriteSheet.getSubimage(151, 99, SPRITE_WIDTH, SPRITE_HEIGHT), 0)
+                .setSpeed(0)
+                .setLoop(false)
+                .build();;
 
         this.toPlay = idle;
     }
-
-    private void addCoolDown(int num) {
-        this.cooldown += num;
-    }
-
-    private void setCoolDown(int num) {
-        this.cooldown = num;
-    }
-
 
     //dodgeFrameCounter starts at 0 before this runs
     private void dodgeRight() {
@@ -233,10 +230,6 @@ public class Player extends Entity {
             this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
-    }
-
-    public boolean isReadyForAction() {
-        return cooldown == 0 && isIdle();
     }
 
     @Override

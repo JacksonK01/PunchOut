@@ -31,7 +31,8 @@ public abstract class Entity {
     protected final int PLAYER_Y_REST_POINT = 400;
     protected Animation idle;
     protected Animation toPlay;
-    int hitStunFrames = 0;
+    private int hitStunFrames = 0;
+    protected int cooldown = 0;
     protected Animation onHit;
     protected Animation onHitStrongLeft, onHitStrongRight;
 
@@ -114,8 +115,12 @@ public abstract class Entity {
 
     public boolean isDodging() {
         return this.currentState == EntityStates.DODGE_DOWN ||
+                this.currentState == EntityStates.BLOCK ||
                 this.currentState == EntityStates.DODGE_LEFT ||
                 this.currentState == EntityStates.DODGE_RIGHT;
+    }
+    protected boolean isReadyForAction() {
+        return cooldown == 0 && isIdle();
     }
 
     /**
@@ -142,6 +147,9 @@ public abstract class Entity {
         this.currentState = state;
     }
 
+    protected void addCoolDown(int num) {
+        this.cooldown += num;
+    }
     public void setStateToHit() {
         this.currentState = EntityStates.HIT_STUN;
     }
@@ -185,7 +193,7 @@ public abstract class Entity {
         setCurrentEntityState(EntityStates.HIT_STUN);
         hitStunFrames++;
         toPlay = onHit;
-        if (hitStunFrames > 30) {
+        if (hitStunFrames > 60) {
             hitStunFrames = 0;
             setCurrentEntityState(EntityStates.IDLE);
         }

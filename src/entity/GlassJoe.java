@@ -14,8 +14,8 @@ import java.util.Objects;
 public class GlassJoe extends Entity {
     private final Animation startPose;
     private final Animation walk;
-    private final Animation punchLeftArm;
-    private final Animation punchRightArm;
+    private final Animation jabLeft;
+    private final Animation jabRight;
     private final Animation taunt;
     private final Animation strongPunchLeftArm;
     private final Animation strongPunchRightArm;
@@ -26,6 +26,7 @@ public class GlassJoe extends Entity {
 
     EventHandler attackEvent;
     RequestHandler<Boolean> isPlayerIdleRequest;
+    RequestHandler<Boolean> isPlayerHitStunRequest;
 
 
     private final int X_REST_POINT = PLAYER_X_REST_POINT + 4;
@@ -33,9 +34,10 @@ public class GlassJoe extends Entity {
 
     private int introTimer = 0;
 
-    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest) {
+    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest) {
         this.attackEvent = attackEvent;
         this.isPlayerIdleRequest = isPlayerIdleRequest;
+        this.isPlayerHitStunRequest = isPlayerHitStunRequest;
 
         BufferedImage spriteSheet = null;
         try {
@@ -90,23 +92,23 @@ public class GlassJoe extends Entity {
                 .setLoop(false)
                 .build();
 
-        int punchSpeed = 8;
+        int punchSpeed = 12;
 
         temp = UtilityTool.createArrayForAnimation(spriteSheet, 2, 231, 12, SPRITE_WIDTH, SPRITE_HEIGHT2, this.entityWidth, this.entityHeight);
 
-        this.punchLeftArm = AnimationBuilder.newInstance()
+        this.jabLeft = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(temp)
                 .setSpeed(punchSpeed)
-                .setLoop(true)
+                .setLoop(false)
                 .build();
 
-        temp = UtilityTool.flipImageArray(punchLeftArm.getFrames());
+        temp = UtilityTool.flipImageArray(jabLeft.getFrames());
 
-        this.punchRightArm = AnimationBuilder.newInstance()
+        this.jabRight = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(temp)
-                .setLoop(true)
+                .setLoop(false)
                 .setSpeed(punchSpeed)
                 .build();
 
@@ -142,7 +144,7 @@ public class GlassJoe extends Entity {
         this.strongPunchRightArm = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(temp)
-                .setLoop(true)
+                .setLoop(false)
                 .setSpeed(STRONG_PUNCH_SPEED)
                 .build();
 
@@ -189,27 +191,36 @@ public class GlassJoe extends Entity {
         }
     }
 
-
-
     @Override
     public void introStateUpdate() {
-            if (introTimer < 120) {
-                toPlay = startPose;
-            } else {
-                toPlay = walk;
-                updateIntro();
-            }
-            introTimer++;
+        if (introTimer < 120) {
+            toPlay = startPose;
+        } else {
+            toPlay = walk;
+            updateIntro();
         }
+        introTimer++;
+    }
 
     @Override
     public void fightStateUpdate() {
-        if(isPlayerIdleRequest.request(this)) {
-            this.idle = punchRightArm;
+        if (isPlayerIdleRequest.request(this) && isReadyForAction()) {
+            setCurrentEntityState(EntityStates.JAB_RIGHT);
+        }
 
-            if (toPlay.getCurrentFrameIndex() >= toPlay.getLength()) {
+        if (isJabRight()) {
+            this.toPlay = jabRight;
+            if (toPlay.isAnimationDone(10)) {
                 attackEvent.execute(this, 20);
             }
+            if (toPlay.isAnimationDone()) {
+                setCurrentEntityState(EntityStates.IDLE);
+                addCoolDown(10);
+            }
+        }
+
+        if (cooldown > 0) {
+            cooldown--;
         }
     }
 
