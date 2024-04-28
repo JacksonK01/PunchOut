@@ -38,7 +38,7 @@ public class AnimationBuilder {
         if (this.ownerEntity != null) {
             UtilityTool.scaleImage(a, ownerEntity.getEntityWidth(), ownerEntity.getEntityHeight());
         }
-        this.frames = a;
+        this.frames = a.clone();
         return this;
     }
     /**

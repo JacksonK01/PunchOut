@@ -1,5 +1,7 @@
 package utility;
 
+import entity.animation.Animation;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -38,5 +40,24 @@ public class UtilityTool {
         }
         scaleImage(arr, scaleWidth, scaleHeight);
         return arr;
+    }
+
+    public static BufferedImage[] flipImageArray(BufferedImage[] toFlip) {
+        BufferedImage[] temp = toFlip.clone();
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = flipImageHorizontal(temp[i]);
+        }
+        return temp;
+    }
+
+    public static BufferedImage flipImageHorizontal(BufferedImage image) {
+        BufferedImage copyOfImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        //r = y, c = x
+        for(int r = 0; r < image.getHeight(); r++) {
+            for (int c = 0; c < image.getWidth(); c++) {
+                copyOfImage.setRGB(c, r, image.getRGB(image.getWidth() - 1 - c, r));
+            }
+        }
+        return copyOfImage;
     }
 }

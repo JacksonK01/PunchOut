@@ -33,6 +33,7 @@ public abstract class Entity {
     protected Animation toPlay;
     int hitStunFrames = 0;
     protected Animation onHit;
+    protected Animation onHitStrongLeft, onHitStrongRight;
 
     public Entity() {}
 
@@ -55,6 +56,68 @@ public abstract class Entity {
     public int getHealth() {
         return this.health;
     }
+
+    protected boolean isDodgeRight() {
+        return this.currentState == EntityStates.DODGE_RIGHT;
+    }
+
+    protected boolean isDodgeLeft() {
+        return this.currentState == EntityStates.DODGE_LEFT;
+    }
+
+    protected boolean isJabRight() {
+        return this.currentState == EntityStates.JAB_RIGHT;
+    }
+
+    protected boolean isJabLeft() {
+        return this.currentState == EntityStates.JAB_LEFT;
+    }
+
+    protected boolean isStrongPunchRight() {
+        return this.currentState == EntityStates.STRONG_PUNCH_RIGHT;
+    }
+
+    protected boolean isStrongPunchLeft() {
+        return this.currentState == EntityStates.STRONG_PUNCH_LEFT;
+    }
+
+    protected boolean isBlock() {
+        return this.currentState == EntityStates.BLOCK;
+    }
+
+    protected boolean isDodgeDown() {
+        return this.currentState == EntityStates.DODGE_DOWN;
+    }
+
+    protected boolean isOutOfStamina() {
+        return this.currentState == EntityStates.OUT_OF_STAMINA;
+    }
+
+    protected boolean isKnockedOut() {
+        return this.currentState == EntityStates.KNOCKED_OUT;
+    }
+
+    public boolean isIdle() {
+        return this.currentState == EntityStates.IDLE;
+    }
+
+    public boolean isHitStun() {
+        return this.currentState == EntityStates.HIT_STUN;
+    }
+
+    public boolean isAttacking() {
+        return this.currentState == EntityStates.JAB_RIGHT ||
+                this.currentState == EntityStates.JAB_LEFT ||
+                this.currentState == EntityStates.STRONG_PUNCH_RIGHT ||
+                this.currentState == EntityStates.STRONG_PUNCH_LEFT;
+    }
+
+    public boolean isDodging() {
+        return this.currentState == EntityStates.DODGE_DOWN ||
+                this.currentState == EntityStates.DODGE_LEFT ||
+                this.currentState == EntityStates.DODGE_RIGHT;
+    }
+
     /**
      * Adds the given animation to the animation registry of the entity.
      * @param a The animation to add to the registry.
@@ -66,7 +129,7 @@ public abstract class Entity {
      * Resets all animations in the registry except for the specified animation.
      * @param dontResetThisAnimation The animation to exclude from the reset operation.
      */
-    public void animationRegistryReset(Animation dontResetThisAnimation) {
+    private void animationRegistryReset(Animation dontResetThisAnimation) {
         animationRegistry.forEach(animation -> {
                     if (animation != dontResetThisAnimation) {
                         animation.reset();
@@ -75,38 +138,13 @@ public abstract class Entity {
         );
     }
 
-    public void setCurrentStateIdle() {
-        this.currentState = EntityStates.IDLE;
+    public void setCurrentEntityState(EntityStates state) {
+        this.currentState = state;
     }
 
-    public void setCurrentStateAttacking() {
-        this.currentState = EntityStates.ATTACKING;
-    }
-
-    public void setCurrentStateHitStun() {
+    public void setStateToHit() {
         this.currentState = EntityStates.HIT_STUN;
     }
-
-    public void setCurrentStateDodging() {
-        this.currentState = EntityStates.DODGING;
-    }
-
-    public boolean isIdle() {
-        return this.currentState == EntityStates.IDLE;
-    }
-
-    public boolean isAttacking() {
-        return this.currentState == EntityStates.ATTACKING;
-    }
-
-    public boolean isDodging() {
-        return this.currentState == EntityStates.DODGING;
-    }
-
-    public boolean isHitStun() {
-        return this.currentState == EntityStates.HIT_STUN;
-    }
-
     public void doDamage(int damage) {
         this.health -= damage;
         if (health <= 0) {
@@ -121,9 +159,10 @@ public abstract class Entity {
         if (GamePhaseManager.getGlobalEventState() == GamePhase.INTRO) {
             introStateUpdate();
         } else if (GamePhaseManager.getGlobalEventState() == GamePhase.FIGHT) {
-            fightStateUpdate();
             if(isHitStun()) {
                 onHit();
+            } else {
+                fightStateUpdate();
             }
         }
     }
@@ -143,22 +182,29 @@ public abstract class Entity {
      * Handles logic when the entity is hit by an attack.
      */
     public void onHit() {
-        setCurrentStateHitStun();
+        setCurrentEntityState(EntityStates.HIT_STUN);
         hitStunFrames++;
         toPlay = onHit;
         if (hitStunFrames > 30) {
             hitStunFrames = 0;
-            setCurrentStateIdle();
+            setCurrentEntityState(EntityStates.IDLE);
         }
     }
     /**
      * Enumerates the possible states for the entity.
      */
-    private enum EntityStates {
+    protected enum EntityStates {
         IDLE,
-        ATTACKING,
+        DODGE_RIGHT,
+        DODGE_LEFT,
+        JAB_RIGHT,
+        JAB_LEFT,
+        STRONG_PUNCH_RIGHT,
+        STRONG_PUNCH_LEFT,
+        BLOCK,
+        DODGE_DOWN,
+        OUT_OF_STAMINA,
         HIT_STUN,
-        DODGING,
         KNOCKED_OUT;
     }
 }

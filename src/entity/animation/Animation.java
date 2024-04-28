@@ -121,6 +121,22 @@ public class Animation {
     public int getLength() {
         return this.frames.length;
     }
+
+    public BufferedImage getFrame(int i) {
+        if (0 <= i && i < getLength()) {
+            return this.frames[i];
+        }
+
+        return null;
+    }
+
+    public int getCurrentFrameIndex() {
+        return currentFrame;
+    }
+
+    public BufferedImage[] getFrames() {
+        return this.frames;
+    }
     /**
      * Resets the animation to its initial state.
      */

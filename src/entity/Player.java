@@ -17,8 +17,6 @@ import java.util.Objects;
  * Handles player actions, animations, and state transitions.
  */
 public class Player extends Entity {
-
-    private ActionState actionState = ActionState.IDLE;
     private int cooldown;
 
     private final Animation dodgeRight, dodgeLeft, block, dodgeDown;
@@ -47,13 +45,14 @@ public class Player extends Entity {
     /**
      * Constructs a new Player entity with the specified key handler and attack event handler.
      * Initializes animations, coordinates, and other properties.
-     * @param keyH The key handler for player input.
+     *
+     * @param keyH        The key handler for player input.
      * @param attackEvent The event handler for player attacks.
      */
     public Player(KeyHandler keyH, EventHandler attackEvent) {
         this.keyH = keyH;
         this.attackEvent = attackEvent;
-        this.worldX = GamePanel.screenWidth /2 - GamePanel.scaledTileSize /2;
+        this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
         this.worldY = 380;
 
         this.entityWidth = 60;
@@ -135,6 +134,8 @@ public class Player extends Entity {
                 .setLoop(false)
                 .build();
 
+        onHit = idle;
+
         this.toPlay = idle;
     }
 
@@ -149,182 +150,139 @@ public class Player extends Entity {
 
     //dodgeFrameCounter starts at 0 before this runs
     private void dodgeRight() {
-        actionState = ActionState.DODGE_RIGHT;
-        if(dodgeFrameCounter < DODGE_FRAMES/2) {
+        this.currentState = EntityStates.DODGE_RIGHT;
+        if (dodgeFrameCounter < DODGE_FRAMES / 2) {
             this.worldX += this.DODGE_SPEED;
         } else {
             this.worldX -= this.DODGE_SPEED;
         }
         dodgeFrameCounter++;
 
-        if(dodgeFrameCounter >= DODGE_FRAMES) {
-            actionState = ActionState.IDLE;
+        if (dodgeFrameCounter >= DODGE_FRAMES) {
+            this.currentState = EntityStates.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
     }
 
     private void dodgeLeft() {
-        actionState = ActionState.DODGE_LEFT;
-        if(dodgeFrameCounter < DODGE_FRAMES/2) {
+        this.currentState = EntityStates.DODGE_LEFT;
+        if (dodgeFrameCounter < DODGE_FRAMES / 2) {
             this.worldX -= this.DODGE_SPEED;
         } else {
             this.worldX += this.DODGE_SPEED;
         }
         dodgeFrameCounter++;
 
-        if(dodgeFrameCounter >= DODGE_FRAMES) {
-            actionState = ActionState.IDLE;
+        if (dodgeFrameCounter >= DODGE_FRAMES) {
+            this.currentState = EntityStates.IDLE;
             dodgeFrameCounter = 0;
             addCoolDown(16);
         }
     }
 
     private void jabRight() {
-        actionState = ActionState.JAB_RIGHT;
-        if(jabFrameCounter < JAB_FRAMES/2) {
+        this.currentState = EntityStates.JAB_RIGHT;
+        if (jabFrameCounter < JAB_FRAMES / 2) {
             this.worldY -= JAB_SPEED;
-            this.worldX -= JAB_SPEED/2;
+            this.worldX -= JAB_SPEED / 2;
         } else {
             this.worldY += JAB_SPEED;
-            this.worldX += JAB_SPEED/2;
+            this.worldX += JAB_SPEED / 2;
         }
         jabFrameCounter++;
-        if(jabFrameCounter >= JAB_FRAMES) {
+        if (jabFrameCounter >= JAB_FRAMES) {
             jabFrameCounter = 0;
-            actionState = ActionState.IDLE;
+            this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
     }
 
     private void jabLeft() {
-        actionState = ActionState.JAB_LEFT;
-        if(jabFrameCounter < JAB_FRAMES/2) {
+        this.currentState = EntityStates.JAB_LEFT;
+        if (jabFrameCounter < JAB_FRAMES / 2) {
             this.worldY -= JAB_SPEED;
-            this.worldX += JAB_SPEED/2;
+            this.worldX += JAB_SPEED / 2;
         } else {
             this.worldY += JAB_SPEED;
-            this.worldX -= JAB_SPEED/2;
+            this.worldX -= JAB_SPEED / 2;
         }
         jabFrameCounter++;
-        if(jabFrameCounter >= JAB_FRAMES) {
+        if (jabFrameCounter >= JAB_FRAMES) {
             jabFrameCounter = 0;
-            actionState = ActionState.IDLE;
+            this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
     }
+
     // block method for player that also handles the ducking animation when s is pressed twice
-    private void block(){
-        if(keyH.doubleDownPressed){
-            actionState = ActionState.DODGE_DOWN;
+    private void block() {
+        if (keyH.doubleDownPressed) {
+            this.currentState = EntityStates.DODGE_DOWN;
             toPlay = dodgeDown;
             dodgeDown.setCurrentFrameIndex(0);
             dodgeFrameCounter++;
         } else {
-            actionState = ActionState.BLOCK;
+            this.currentState = EntityStates.BLOCK;
         }
 
         blockFrameCounter++;
-        if(!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
+        if (!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
             blockFrameCounter = 0;
             dodgeFrameCounter = 0;
-            actionState = ActionState.IDLE;
+            this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
     }
 
-    private boolean isDodgeRight() {
-        return actionState == ActionState.DODGE_RIGHT;
-    }
-
-    private boolean isDodgeLeft() {
-        return actionState == ActionState.DODGE_LEFT;
-    }
-
-    private boolean isJabRight() {
-        return actionState == ActionState.JAB_RIGHT;
-    }
-
-    private boolean isJabLeft() {
-        return actionState == ActionState.JAB_LEFT;
-    }
-
-    private boolean isReadyForAction() {
-        return actionState == ActionState.IDLE && cooldown == 0;
-    }
-    private boolean isBlocking(){
-        return actionState == ActionState.BLOCK;
-    }
-    private boolean isDodgeDown(){
-        return actionState == ActionState.DODGE_DOWN;
+    public boolean isReadyForAction() {
+        return cooldown == 0 && isIdle();
     }
 
     @Override
     protected void introStateUpdate() {
 
     }
+
     /**
      * Updates the player's state and position during the fight state.
      */
     @Override
     protected void fightStateUpdate() {
-        setCurrentStateIdle();
-        if((keyH.rightPressed && isReadyForAction()) || isDodgeRight()) {
+        if ((keyH.rightPressed && isReadyForAction()) || isDodgeRight()) {
             toPlay = dodgeRight;
             dodgeRight();
-            setCurrentStateDodging();
-        } else if((keyH.leftPressed && isReadyForAction()) || isDodgeLeft()) {
+        } else if ((keyH.leftPressed && isReadyForAction()) || isDodgeLeft()) {
             toPlay = dodgeLeft;
             dodgeLeft();
-            setCurrentStateDodging();
-        } else if((keyH.rightArm && isReadyForAction()) || isJabRight()) {
+        } else if ((keyH.rightArm && isReadyForAction()) || isJabRight()) {
             toPlay = jabRight;
             attackEvent.execute(this, 10);
             jabRight();
-            setCurrentStateAttacking();
-        } else if((keyH.leftArm && isReadyForAction()) || isJabLeft()) {
+        } else if ((keyH.leftArm && isReadyForAction()) || isJabLeft()) {
             toPlay = jabLeft;
             attackEvent.execute(this, 10);
             jabLeft();
-            setCurrentStateAttacking();
-        }
-        else if((keyH.downPressed && isReadyForAction()) || isBlocking()){
+        } else if ((keyH.downPressed && isReadyForAction()) || isBlock()) {
             toPlay = block;
             block();
-            setCurrentStateDodging();
-        }
-        else if(isDodgeDown()){
+        } else if (isDodgeDown()) {
             toPlay = dodgeDown;
             block();
-            setCurrentStateDodging();
-        }
-        else {
-            toPlay = idle;
         }
 
-        if(cooldown > 0) {
+        if (cooldown > 0) {
             cooldown--;
         }
     }
+
     /**
      * Returns a string representation of the player entity.
+     *
      * @return The string representation of the player.
      */
     @Override
     public String toString() {
         return "Player";
-    }
-    /**
-     * Enumerates the possible action states for the player entity.
-     */
-    private enum ActionState {
-        IDLE,
-        DODGE_RIGHT,
-        DODGE_LEFT,
-        JAB_RIGHT,
-        JAB_LEFT,
-        BLOCK,
-        DODGE_DOWN,
-        OUT_OF_STAMINA;
     }
 }
