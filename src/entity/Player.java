@@ -71,10 +71,13 @@ public class Player extends Entity {
         int SPRITE_HEIGHT = 62;
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
         BufferedImage[] blockAnim = UtilityTool.createArrayForAnimation(spriteSheet, 2, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
-        BufferedImage[] tempDodgeDownAnim = UtilityTool.createArrayForAnimation(spriteSheet, 3, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
-        BufferedImage[] dodgeDownAnim = new BufferedImage[1];
-        //dodgeDownAnim[0] = tempDodgeDownAnim[0];
-        dodgeDownAnim[0] = tempDodgeDownAnim[2];
+        BufferedImage[] tempDodgeDownAnim = UtilityTool.createArrayForAnimation(spriteSheet, 5, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
+        /* TODO: REMEMBER TO TIDY THIS UP */
+        BufferedImage[] dodgeDownAnim = new BufferedImage[4];
+        dodgeDownAnim[0] = tempDodgeDownAnim[0];
+        dodgeDownAnim[1] = tempDodgeDownAnim[1];
+        dodgeDownAnim[2] = tempDodgeDownAnim[2];
+        dodgeDownAnim[3] = tempDodgeDownAnim[2];
 
         this.idle = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
@@ -129,7 +132,7 @@ public class Player extends Entity {
         dodgeDown = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(dodgeDownAnim)
-                .setSpeed(10)
+                .setSpeed(7)
                 .setLoop(false)
                 .build();
 
@@ -177,35 +180,23 @@ public class Player extends Entity {
         }
     }
 
-    private void jabRight() {
-        this.currentState = EntityStates.JAB_RIGHT;
-        if (jabFrameCounter < JAB_FRAMES / 2) {
-            this.worldY -= JAB_SPEED;
-            this.worldX -= JAB_SPEED / 2;
+    private void jab(boolean isJabRight) {
+        int m;
+        if(isJabRight) {
+            this.currentState = EntityStates.JAB_RIGHT;
+            m = -1;
         } else {
+            this.currentState = EntityStates.JAB_LEFT;
+            m = 1;
+        }
+        if (toPlay.isAnimationDone(toPlay.getAnimationDuration()/2)) {
             this.worldY += JAB_SPEED;
-            this.worldX += JAB_SPEED / 2;
-        }
-        jabFrameCounter++;
-        if (jabFrameCounter >= JAB_FRAMES) {
-            jabFrameCounter = 0;
-            this.currentState = EntityStates.IDLE;
-            addCoolDown(6);
-        }
-    }
-
-    private void jabLeft() {
-        this.currentState = EntityStates.JAB_LEFT;
-        if (jabFrameCounter < JAB_FRAMES / 2) {
-            this.worldY -= JAB_SPEED;
-            this.worldX += JAB_SPEED / 2;
+            this.worldX -= (JAB_SPEED / 2) * m;
         } else {
-            this.worldY += JAB_SPEED;
-            this.worldX -= JAB_SPEED / 2;
+            this.worldY -= JAB_SPEED;
+            this.worldX += (JAB_SPEED / 2) * m;
         }
-        jabFrameCounter++;
-        if (jabFrameCounter >= JAB_FRAMES) {
-            jabFrameCounter = 0;
+        if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
@@ -213,19 +204,21 @@ public class Player extends Entity {
 
     // block method for player that also handles the ducking animation when s is pressed twice
     private void block() {
-        if (keyH.doubleDownPressed) {
-            this.currentState = EntityStates.DODGE_DOWN;
-            toPlay = dodgeDown;
-            dodgeDown.setCurrentFrameIndex(0);
-            dodgeFrameCounter++;
-        } else {
-            this.currentState = EntityStates.BLOCK;
-        }
-
+        this.currentState = EntityStates.BLOCK;
         blockFrameCounter++;
         if (!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
             blockFrameCounter = 0;
             dodgeFrameCounter = 0;
+            this.currentState = EntityStates.IDLE;
+            addCoolDown(6);
+        } else if (keyH.doubleDownPressed) {
+            this.currentState = EntityStates.DODGE_DOWN;
+        }
+    }
+
+    private void dodgeDown() {
+        this.currentState = EntityStates.DODGE_DOWN;
+        if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
             addCoolDown(6);
         }
@@ -250,16 +243,16 @@ public class Player extends Entity {
         } else if ((keyH.rightArm && isReadyForAction()) || isJabRight()) {
             toPlay = jabRight;
             //attackEvent.execute(this, 10);
-            jabRight();
+            jab(true);
         } else if ((keyH.leftArm && isReadyForAction()) || isJabLeft()) {
             toPlay = jabLeft;
             //attackEvent.execute(this, 10);
-            jabLeft();
-        } else if ((keyH.downPressed && isReadyForAction()) || isBlock()) {
-            toPlay = block;
-            block();
+            jab(false);
         } else if (isDodgeDown()) {
             toPlay = dodgeDown;
+            dodgeDown();
+        } else if ((keyH.downPressed && isReadyForAction()) || isBlock()) {
+            toPlay = block;
             block();
         }
     }

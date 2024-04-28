@@ -49,7 +49,6 @@ public class GameEngine {
         return sender.isIdle();
     };
 
-
     /**
      * Constructs a new GameEngine with the specified game panel.
      * Initializes the player, opponent, key handler, and event manager.
