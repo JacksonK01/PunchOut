@@ -172,6 +172,9 @@ public abstract class Entity {
             } else {
                 fightStateUpdate();
             }
+            if (cooldown > 0) {
+                cooldown--;
+            }
         }
     }
     /**

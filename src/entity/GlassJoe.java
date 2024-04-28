@@ -218,10 +218,6 @@ public class GlassJoe extends Entity {
                 addCoolDown(10);
             }
         }
-
-        if (cooldown > 0) {
-            cooldown--;
-        }
     }
 
     @Override

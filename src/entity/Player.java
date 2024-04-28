@@ -263,10 +263,6 @@ public class Player extends Entity {
             toPlay = dodgeDown;
             block();
         }
-
-        if (cooldown > 0) {
-            cooldown--;
-        }
     }
 
     /**
