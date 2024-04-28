@@ -17,7 +17,7 @@ public class Animation {
     private int width, height;
     private int frameCounter = 0;
     private int currentFrameIndex = 0;
-    private int duration = 0;
+    private long duration = 0;
     private boolean isAnimationDone = false;
     private final Entity ownerEntity; // Only if needed
 
@@ -48,8 +48,8 @@ public class Animation {
     public void drawAnimation(Graphics2D g2) {
         if (!isAnimationDone) {
             frameCounter++;
-            duration++;
         }
+        duration++;
         if (frameCounter > speed) {
             if (currentFrameIndex >= frames.length - 1) {
                 if (loop) {

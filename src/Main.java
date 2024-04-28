@@ -11,7 +11,7 @@ public class Main {
         window.setResizable(false);
         window.setTitle("Punch Out");
 
-        Transitions transitions = new Transitions(window);
+        //Transitions transitions = new Transitions(window);
         GamePanel gamePanel = new GamePanel();
         //window.setContentPane(transitions);
         window.setContentPane(gamePanel);

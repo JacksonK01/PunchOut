@@ -57,7 +57,7 @@ public class GameEngine {
     public GameEngine() {
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent);
-        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest);
+        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest);
         this.gamePhaseManager = new GamePhaseManager();
     }
     /**

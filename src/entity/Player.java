@@ -72,7 +72,6 @@ public class Player extends Entity {
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
         BufferedImage[] blockAnim = UtilityTool.createArrayForAnimation(spriteSheet, 2, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
         BufferedImage[] tempDodgeDownAnim = UtilityTool.createArrayForAnimation(spriteSheet, 3, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
-        /* TODO: REMEMBER TO TIDY THIS UP */
         BufferedImage[] dodgeDownAnim = new BufferedImage[1];
         //dodgeDownAnim[0] = tempDodgeDownAnim[0];
         dodgeDownAnim[0] = tempDodgeDownAnim[2];
@@ -250,11 +249,11 @@ public class Player extends Entity {
             dodgeLeft();
         } else if ((keyH.rightArm && isReadyForAction()) || isJabRight()) {
             toPlay = jabRight;
-            attackEvent.execute(this, 10);
+            //attackEvent.execute(this, 10);
             jabRight();
         } else if ((keyH.leftArm && isReadyForAction()) || isJabLeft()) {
             toPlay = jabLeft;
-            attackEvent.execute(this, 10);
+            //attackEvent.execute(this, 10);
             jabLeft();
         } else if ((keyH.downPressed && isReadyForAction()) || isBlock()) {
             toPlay = block;

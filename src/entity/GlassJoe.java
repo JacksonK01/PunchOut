@@ -27,6 +27,9 @@ public class GlassJoe extends Entity {
     EventHandler attackEvent;
     RequestHandler<Boolean> isPlayerIdleRequest;
     RequestHandler<Boolean> isPlayerHitStunRequest;
+    RequestHandler<Boolean> isDodging;
+    RequestHandler<Boolean> isAttacking;
+    RequestHandler<Boolean> isHitStun;
 
 
     private final int X_REST_POINT = PLAYER_X_REST_POINT + 4;
@@ -34,10 +37,13 @@ public class GlassJoe extends Entity {
 
     private int introTimer = 0;
 
-    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest) {
+    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest) {
         this.attackEvent = attackEvent;
         this.isPlayerIdleRequest = isPlayerIdleRequest;
         this.isPlayerHitStunRequest = isPlayerHitStunRequest;
+        this.isAttacking = isAttackingRequest;
+        this.isDodging = isDodgingRequest;
+        this.isHitStun = isHitStunRequest;
 
         BufferedImage spriteSheet = null;
         try {
@@ -204,19 +210,78 @@ public class GlassJoe extends Entity {
 
     @Override
     public void fightStateUpdate() {
-        if (isPlayerIdleRequest.request(this) && isReadyForAction()) {
-            setCurrentEntityState(EntityStates.JAB_RIGHT);
+        if(isReadyForAction()){
+            if (isAttacking.request(this)) {
+                int dodge = (int) (Math.random() * 100);
+                if (dodge < 5) {
+                    dodgeDirection();
+                }
+            }
+            if (isPlayerIdleRequest.request(this)) {
+                //generate random number to see if he will attack
+                int attack = (int) (Math.random() * 100);
+                if (attack < 1) {
+                    attackStateSet();
+                }
+            }
         }
 
         if (isJabRight()) {
+            jab(true);
+        }
+        if (isJabLeft()) {
+            jab(false);
+        }
+        if (isDodgeRight()){
+            dodge(true);
+        }
+        if (isDodgeLeft()){
+            dodge(false);
+        }
+    }
+    private void attackStateSet() {
+        //generate random number to see if he will attack
+        int attack = (int) (Math.random() * 100);
+        if (attack < 50) {
+            setCurrentEntityState(EntityStates.JAB_RIGHT);
+        }
+        else {
+            setCurrentEntityState(EntityStates.JAB_LEFT);
+        }
+    }
+    private void jab(Boolean isRight) {
+        if (isRight) {
             this.toPlay = jabRight;
-            if (toPlay.isAnimationDone(10)) {
-                attackEvent.execute(this, 20);
-            }
-            if (toPlay.isAnimationDone()) {
-                setCurrentEntityState(EntityStates.IDLE);
-                addCoolDown(10);
-            }
+
+        } else {
+            this.toPlay = jabLeft;
+        }
+        if (toPlay.isAnimationDone(10)) {
+            attackEvent.execute(this, 20);
+        }
+        if (toPlay.isAnimationDone()) {
+            setCurrentEntityState(EntityStates.IDLE);
+            addCoolDown(10);
+        }
+    }
+    private void dodgeDirection() {
+        int dodge = (int) (Math.random() * 100);
+        if (dodge < 50) {
+            setCurrentEntityState(EntityStates.DODGE_RIGHT);
+        }
+        else {
+            setCurrentEntityState(EntityStates.DODGE_LEFT);
+        }
+    }
+    private void dodge(Boolean isRight) {
+        if (isRight) {
+            this.toPlay = dodgeRight;
+        } else {
+            this.toPlay = dodgeLeft;
+        }
+        if (toPlay.isAnimationDone(-20)) {
+            setCurrentEntityState(EntityStates.IDLE);
+            addCoolDown(10);
         }
     }
 

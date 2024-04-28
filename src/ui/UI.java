@@ -43,7 +43,6 @@ public class UI {
         }
         // x 0 to 32 y 12 to 17 on sprite sheet
         // 115 total pixels, 35 pixels per round
-        // TODO: Make Round sprites work
         for(int x = 0; x < roundSprites.length; x++) {
             this.roundSprites[x] = spriteSheet.getSubimage((x*36)+1, 12, 32, 7);
         }
