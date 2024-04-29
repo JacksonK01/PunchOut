@@ -108,6 +108,10 @@ public class Animation {
         return speed * frames.length;
     }
 
+    public long getDuration() {
+        return this.duration;
+    }
+
     public boolean isAnimationDone() {
         return duration >= getAnimationDuration();
     }

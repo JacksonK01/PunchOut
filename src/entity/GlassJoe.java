@@ -2,7 +2,7 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
-import game.events.EventHandler;
+import game.events.AttackHandler;
 import game.events.RequestHandler;
 import utility.UtilityTool;
 
@@ -24,7 +24,7 @@ public class GlassJoe extends Entity {
     private Animation gettingBackUp;
     private final Animation block;
 
-    EventHandler attackEvent;
+    AttackHandler attackEvent;
     RequestHandler<Boolean> isPlayerIdleRequest;
     RequestHandler<Boolean> isPlayerHitStunRequest;
     RequestHandler<Boolean> isDodging;
@@ -38,7 +38,7 @@ public class GlassJoe extends Entity {
 
     private int introTimer = 0;
 
-    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest, RequestHandler<Boolean> isStrongPunchRequest) {
+    public GlassJoe(AttackHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest, RequestHandler<Boolean> isStrongPunchRequest) {
         this.attackEvent = attackEvent;
         this.isPlayerIdleRequest = isPlayerIdleRequest;
         this.isPlayerHitStunRequest = isPlayerHitStunRequest;
@@ -100,7 +100,7 @@ public class GlassJoe extends Entity {
                 .setLoop(false)
                 .build();
 
-        int punchSpeed = 12;
+        int punchSpeed = 20;
 
         temp = UtilityTool.createArrayForAnimation(spriteSheet, 2, 231, 12, SPRITE_WIDTH, SPRITE_HEIGHT2, this.entityWidth, this.entityHeight);
 
@@ -221,14 +221,14 @@ public class GlassJoe extends Entity {
         if(isReadyForAction()){
             if (isAttacking.request(this)) {
                 int dodge = (int) (Math.random() * 100);
-                if (dodge < 5) {
+                if (dodge < 10) {
                     dodgeDirection();
                 }
             }
             if (isPlayerIdleRequest.request(this) || isAttacking.request(this)) {
                 //generate random number to see if he will attack
                 int attack = (int) (Math.random() * 100);
-                if (attack < 1) {
+                if (attack < 2) {
                     attackStateSet();
                 }
             }
@@ -271,7 +271,9 @@ public class GlassJoe extends Entity {
         } else {
             this.toPlay = jabLeft;
         }
-        if (toPlay.isAnimationDone(10)) {
+        long duration = toPlay.getDuration();
+        int maxDuration = toPlay.getAnimationDuration();
+        if ((maxDuration/2) < duration && duration < maxDuration - 10) {
             attackEvent.execute(this, 20);
         }
         if (toPlay.isAnimationDone()) {
@@ -294,7 +296,7 @@ public class GlassJoe extends Entity {
         } else {
             this.toPlay = dodgeLeft;
         }
-        if (toPlay.isAnimationDone(-20)) {
+        if (toPlay.isAnimationDone(-30)) {
             setCurrentEntityState(EntityStates.IDLE);
             addCoolDown(10);
         }

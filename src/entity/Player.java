@@ -2,8 +2,10 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
-import game.events.EventHandler;
+import game.Sound;
+import game.events.AttackHandler;
 import game.GamePanel;
+import game.events.RequestHandler;
 import input.KeyHandler;
 import utility.UtilityTool;
 
@@ -18,17 +20,17 @@ import java.util.Objects;
  */
 public class Player extends Entity {
     private final Animation dodgeRight, dodgeLeft, block, dodgeDown;
-    private final int DODGE_SPEED = 5;
     private final Animation jabRight, jabLeft;
     private final Animation strongPunchRight, strongPunchLeft;
-    private final int JAB_SPEED = 2;
     private int blockFrameCounter = 0;
-    private final int BLOCK_FRAMES = 30;
     public int score = 0;
     int dodgeFrameCounter = 0;
     public int testScore = 132020;
-    private final EventHandler attackEvent;
+    private final AttackHandler attackEvent;
+    private final RequestHandler isRightHandedRequest;
     private final KeyHandler keyH;
+    private int stamina = 20;
+    private final Sound punch = new Sound("/sound/effect/punch.wav");
 
     /**
      * Constructs a new Player entity with the specified key handler and attack event handler.
@@ -37,11 +39,13 @@ public class Player extends Entity {
      * @param keyH        The key handler for player input.
      * @param attackEvent The event handler for player attacks.
      */
-    public Player(KeyHandler keyH, EventHandler attackEvent) {
+    public Player(KeyHandler keyH, AttackHandler attackEvent, RequestHandler<Boolean> isRightHandedRequest) {
         this.keyH = keyH;
         this.attackEvent = attackEvent;
-        this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
+        this.isRightHandedRequest = isRightHandedRequest;
+        this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2 + 20;
         this.worldY = 380;
+        this.punch.changeVolume(-10);
 
         this.entityWidth = 60;
         this.entityHeight = 160;
@@ -128,7 +132,7 @@ public class Player extends Entity {
                 .setFrame(jabLeft.getFrame(0), 0)
                 .setFrame(jabLeft.getFrame(1), 1)
                 .setFrame(jabLeft.getFrame(2), 2)
-                .setFrame(spriteSheet.getSubimage(220, 8, SPRITE_WIDTH, SPRITE_HEIGHT + 19), 3)
+                .setFrame(spriteSheet.getSubimage(218, 8, SPRITE_WIDTH, SPRITE_HEIGHT + 19), 3)
                 .setLoop(false)
                 .setSpeed(6)
                 .build();
@@ -136,14 +140,14 @@ public class Player extends Entity {
         block = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(blockAnim)
-                .setSpeed(10)
+                .setSpeed(5)
                 .setLoop(false)
                 .build();
 
         dodgeDown = AnimationBuilder.newInstance()
                 .setOwnerEntity(this)
                 .setAnimationWithArray(dodgeDownAnim)
-                .setSpeed(7)
+                .setSpeed(4)
                 .setLoop(false)
                 .build();
 
@@ -158,6 +162,10 @@ public class Player extends Entity {
         this.toPlay = idle;
     }
 
+    public int getStamina() {
+        return this.stamina;
+    }
+
     private void dodge(boolean isDodgeRight) {
         int m;
         if (isDodgeRight) {
@@ -168,21 +176,28 @@ public class Player extends Entity {
             m = -1;
         }
 
+        int DODGE_SPEED = 5;
         if (toPlay.isAnimationDone(toPlay.getAnimationDuration()/2)) {
-            this.worldX -= this.DODGE_SPEED * m;
+            this.worldX -= DODGE_SPEED * m;
         } else {
-            this.worldX += this.DODGE_SPEED * m;
+            this.worldX += DODGE_SPEED * m;
         }
 
         if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
             addCoolDown(16);
+            stamina--;
         }
     }
 
     private void jab(boolean isJabRight, boolean isStrongPunch) {
+        if (toPlay.getDuration() == 0) {
+            punch.play();
+        }
         int m;
+        int JAB_SPEED;
         if (isStrongPunch) {
+            JAB_SPEED = 5;
             if (isJabRight) {
                 this.currentState = EntityStates.STRONG_PUNCH_RIGHT;
                 m = -1;
@@ -191,6 +206,7 @@ public class Player extends Entity {
                 m = 1;
             }
         } else {
+            JAB_SPEED = 2;
             if(isJabRight) {
                 this.currentState = EntityStates.JAB_RIGHT;
                 m = -1;
@@ -201,14 +217,16 @@ public class Player extends Entity {
         }
         if (toPlay.isAnimationDone(toPlay.getAnimationDuration()/2)) {
             this.worldY += JAB_SPEED;
-            this.worldX -= (JAB_SPEED / 2) * m;
+            this.worldX -= m;
+            this.attackEvent.execute(this, 10);
         } else {
             this.worldY -= JAB_SPEED;
-            this.worldX += (JAB_SPEED / 2) * m;
+            this.worldX += m;
         }
         if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
             addCoolDown(6);
+            stamina--;
         }
     }
 
@@ -216,6 +234,7 @@ public class Player extends Entity {
     private void block() {
         this.currentState = EntityStates.BLOCK;
         blockFrameCounter++;
+        int BLOCK_FRAMES = 30;
         if (!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
             blockFrameCounter = 0;
             dodgeFrameCounter = 0;
@@ -260,19 +279,15 @@ public class Player extends Entity {
             dodge(false);
         } else if ((keyH.rightArm && keyH.upPressed && isReadyForAction()) || isStrongPunchRight()) {
             toPlay = strongPunchRight;
-            //attackEvent.execute(this, 20);
             jab(true, true);
         } else if ((keyH.leftArm && keyH.upPressed && isReadyForAction()) || isStrongPunchLeft()) {
             toPlay = strongPunchLeft;
-            //attackEvent.execute(this, 20);
             jab(false, true);
         } else if ((keyH.rightArm && isReadyForAction()) || isJabRight()) {
             toPlay = jabRight;
-            //attackEvent.execute(this, 10);
             jab(true, false);
         } else if ((keyH.leftArm && isReadyForAction()) || isJabLeft()) {
             toPlay = jabLeft;
-            //attackEvent.execute(this, 10);
             jab(false, false);
         } else if (isDodgeDown() && cooldown == 0) {
             toPlay = dodgeDown;
@@ -286,6 +301,12 @@ public class Player extends Entity {
             this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
             this.worldY = 380;
         }
+    }
+
+    @Override
+    protected void onHit() {
+        super.onHit();
+
     }
 
     /**

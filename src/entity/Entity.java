@@ -108,6 +108,11 @@ public abstract class Entity {
         return this.currentState == EntityStates.HIT_STUN;
     }
 
+    //If this is false, then you can assume it's left
+    public boolean isRightHand() {
+        return isStrongPunchRight() || isJabRight();
+    }
+
     public boolean isAttacking() {
         return this.currentState == EntityStates.JAB_RIGHT ||
                 this.currentState == EntityStates.JAB_LEFT ||
@@ -178,6 +183,9 @@ public abstract class Entity {
             if (cooldown > 0) {
                 cooldown--;
             }
+            if (isIdle()) {
+                resetCoordinates();
+            }
         }
     }
     /**
@@ -197,11 +205,12 @@ public abstract class Entity {
     /**
      * Handles logic when the entity is hit by an attack.
      */
-    private void onHit() {
+    protected void onHit() {
         setCurrentEntityState(EntityStates.HIT_STUN);
         hitStunFrames++;
         toPlay = onHit;
-        if (hitStunFrames > 60) {
+        int HIT_STUN_FRAME_MAX = 20;
+        if (hitStunFrames > HIT_STUN_FRAME_MAX) {
             hitStunFrames = 0;
             setCurrentEntityState(EntityStates.IDLE);
         }

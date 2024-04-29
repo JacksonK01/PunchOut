@@ -51,6 +51,9 @@ public class GamePanel extends JPanel implements Runnable {
     /** The user interface for displaying game information. */
     UI ui = new UI(this);
 
+    Sound themeSong = new Sound("/sound/music/fight_theme.wav");
+    Sound crowd = new Sound("/sound/effect/crowd_noise.wav");
+
     /**
      * Constructs a new GamePanel with default dimensions and settings.
      */
@@ -60,6 +63,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(this.engine.getKeyHandler());
         this.setFocusable(true);
+
+        themeSong.changeVolume(-15);
+        themeSong.play();
+        themeSong.loop();
+
+        crowd.changeVolume(-27);
+        crowd.play();
+        crowd.loop();
     }
     /**
      * Retrieves the game engine associated with this game panel.
@@ -113,6 +124,10 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         ui.update();
         engine.update();
+
+        if (GamePhaseManager.getGlobalEventState() != GamePhase.INTRO) {
+            crowd.stop();
+        }
     }
     /**
      * Paints the game scene and UI elements on the panel.

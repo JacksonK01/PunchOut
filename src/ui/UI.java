@@ -53,7 +53,7 @@ public class UI {
         }
         public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
-            int score = gp.getGameEngine().getPlayer().testScore;
+            int score = gp.getGameEngine().getPlayer().score;
 
             String scoreStr = Integer.toString(score);
 
@@ -70,8 +70,11 @@ public class UI {
             g2.drawString(scoreStr, 150* gp.scale + shift, 27* gp.scale + 2);
         }
         public void drawStamina(Graphics2D g2){
-            //int stamina = gp.player.;
-            int stamina = 20;
+            int stamina = gp.getGameEngine().getPlayer().getStamina();
+
+            if (stamina < 0) {
+                stamina = 0;
+            }
             String scoreStr = Integer.toString(stamina);
             for (int i = scoreStr.length()-1; i >= 0; i--) {
                 int digit = Character.getNumericValue(scoreStr.charAt(i));
@@ -92,8 +95,8 @@ public class UI {
             int maxHealthEnemy = 100; // Maximum health
             //int currentHealth = gp.player.health; // Current health
             //int currentHealthEnemy = gp.enemy.health; // Current health
-            int currentHealthPlayer = 80;
-            int currentHealthEnemy = 95;
+            int currentHealthPlayer = gp.getGameEngine().getPlayer().getHealth();
+            int currentHealthEnemy = gp.getGameEngine().getOpponent().getHealth();
 
             int barWidth = 49 * gp.scale - 2; // Width of the health bar
             int barHeight = 6 * gp.scale + 1; // Height of the health bar
