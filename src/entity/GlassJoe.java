@@ -263,18 +263,10 @@ public class GlassJoe extends Entity {
             }
         }
         if (isStrongPunchRight()) {
-            toPlay = strongPunchRightArm;
-            if (toPlay.isAnimationDone()) {
-                setCurrentEntityState(EntityStates.IDLE);
-                addCoolDown(10);
-            }
+            strongPunch(true);
         }
         if (isStrongPunchLeft()) {
-            toPlay = strongPunchLeftArm;
-            if (toPlay.isAnimationDone()) {
-                setCurrentEntityState(EntityStates.IDLE);
-                addCoolDown(10);
-            }
+            strongPunch(false);
         }
     }
     private void attackStateSet() {
@@ -316,7 +308,7 @@ public class GlassJoe extends Entity {
         }
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
-        if ((maxDuration/2) < duration && duration < maxDuration - 10) {
+        if ((maxDuration/2) < duration && duration < maxDuration - 15) {
             attackEvent.execute(this, 20);
         }
         if (toPlay.isAnimationDone()) {
@@ -343,6 +335,27 @@ public class GlassJoe extends Entity {
             setCurrentEntityState(EntityStates.IDLE);
             addCoolDown(10);
         }
+    }
+    private void strongPunch(Boolean isRight) {
+        if (isRight) {
+            this.toPlay = strongPunchRightArm;
+        } else {
+            this.toPlay = strongPunchLeftArm;
+        }
+        if (toPlay.isAnimationDone()) {
+            setCurrentEntityState(EntityStates.IDLE);
+            addCoolDown(10);
+        }
+        long duration = toPlay.getDuration();
+        int maxDuration = toPlay.getAnimationDuration();
+        if ((maxDuration/2) < duration && duration < maxDuration - 10) {
+            attackEvent.execute(this, 20);
+        }
+        if (toPlay.isAnimationDone()) {
+            setCurrentEntityState(EntityStates.IDLE);
+            addCoolDown(10);
+        }
+
     }
 
     @Override
