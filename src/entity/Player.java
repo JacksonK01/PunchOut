@@ -296,11 +296,6 @@ public class Player extends Entity {
             toPlay = block;
             block();
         }
-
-        if(isHitStun()) {
-            this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
-            this.worldY = 380;
-        }
     }
 
     @Override
