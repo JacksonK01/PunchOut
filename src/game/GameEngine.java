@@ -21,6 +21,8 @@ public class GameEngine {
     private Entity opponent;
     private KeyHandler keyH;
     private final GamePhaseManager gamePhaseManager;
+    Sound crowd = new Sound("/sound/effect/crowd_noise.wav");
+
 
     /** Event handler for generic attacks. */
     private final AttackHandler genericAttackEvent = (attacker, damage) -> {
@@ -29,6 +31,7 @@ public class GameEngine {
             if (attacker == player) {
                 player.score += 100;
             }
+            crowd.play();
             defender.doDamage(damage);
             defender.setStateToHit();
             System.out.println(attacker + " attacked " + defender + " for " + damage + " damage");
@@ -70,6 +73,7 @@ public class GameEngine {
      * Initializes the player, opponent, key handler, and event manager.
      */
     public GameEngine() {
+        crowd.changeVolume(-27);
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent, isRightHandRequest);
         this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest, isStrongRequest);

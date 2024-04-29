@@ -346,6 +346,9 @@ public class GlassJoe extends Entity {
             setCurrentEntityState(EntityStates.IDLE);
             addCoolDown(10);
         }
+        if (toPlay.getDuration() <= 1) {
+            punch.play();
+        }
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
         if ((maxDuration/2) < duration && duration < maxDuration - 10) {
