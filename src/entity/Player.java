@@ -191,7 +191,7 @@ public class Player extends Entity {
     }
 
     private void jab(boolean isJabRight, boolean isStrongPunch) {
-        if (toPlay.getDuration() == 0) {
+        if (toPlay.getDuration() <= 1) {
             punch.play();
         }
         int m;
