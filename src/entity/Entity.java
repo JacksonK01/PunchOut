@@ -197,7 +197,7 @@ public abstract class Entity {
     /**
      * Handles logic when the entity is hit by an attack.
      */
-    public void onHit() {
+    private void onHit() {
         setCurrentEntityState(EntityStates.HIT_STUN);
         hitStunFrames++;
         toPlay = onHit;
