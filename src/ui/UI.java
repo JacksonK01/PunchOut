@@ -91,8 +91,8 @@ public class UI {
             }
         }
         public void drawHealth(Graphics2D g2){
-            int maxHealthPlayer = 100; // Maximum health
-            int maxHealthEnemy = 100; // Maximum health
+            int maxHealthPlayer = 50; // Maximum health
+            int maxHealthEnemy = 50; // Maximum health
             //int currentHealth = gp.player.health; // Current health
             //int currentHealthEnemy = gp.enemy.health; // Current health
             int currentHealthPlayer = gp.getGameEngine().getPlayer().getHealth();

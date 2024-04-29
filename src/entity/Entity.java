@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Provides common functionality and properties for entities.
  */
 public abstract class Entity {
-    protected int health;
+    protected int health = 50;
     protected int worldX, worldY;
     protected BufferedImage sprite;
     /**
