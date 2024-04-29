@@ -33,6 +33,10 @@ public class GameEngine {
         Entity sender = receiver == player ? opponent : player;
         return sender.isDodging();
     };
+    private final RequestHandler<Boolean> isStrongRequest = (receiver) -> {
+        Entity sender = receiver == player ? opponent : player;
+        return sender.isStrongPunch();
+    };
 
     private final RequestHandler<Boolean> isAttackingRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
@@ -56,7 +60,7 @@ public class GameEngine {
     public GameEngine() {
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent);
-        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest);
+        this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest, isStrongRequest);
         this.gamePhaseManager = new GamePhaseManager();
     }
     /**

@@ -73,7 +73,9 @@ public abstract class Entity {
     protected boolean isJabLeft() {
         return this.currentState == EntityStates.JAB_LEFT;
     }
-
+    public boolean isStrongPunch() {
+        return this.currentState == EntityStates.STRONG_PUNCH_RIGHT || this.currentState == EntityStates.STRONG_PUNCH_LEFT;
+    }
     protected boolean isStrongPunchRight() {
         return this.currentState == EntityStates.STRONG_PUNCH_RIGHT;
     }

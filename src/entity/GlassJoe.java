@@ -30,6 +30,7 @@ public class GlassJoe extends Entity {
     RequestHandler<Boolean> isDodging;
     RequestHandler<Boolean> isAttacking;
     RequestHandler<Boolean> isHitStun;
+    RequestHandler<Boolean> isStrongPunch;
 
 
     private final int X_REST_POINT = PLAYER_X_REST_POINT + 4;
@@ -37,13 +38,14 @@ public class GlassJoe extends Entity {
 
     private int introTimer = 0;
 
-    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest) {
+    public GlassJoe(EventHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest, RequestHandler<Boolean> isStrongPunchRequest) {
         this.attackEvent = attackEvent;
         this.isPlayerIdleRequest = isPlayerIdleRequest;
         this.isPlayerHitStunRequest = isPlayerHitStunRequest;
         this.isAttacking = isAttackingRequest;
         this.isDodging = isDodgingRequest;
         this.isHitStun = isHitStunRequest;
+        this.isStrongPunch = isStrongPunchRequest;
 
         BufferedImage spriteSheet = null;
         try {
@@ -243,6 +245,13 @@ public class GlassJoe extends Entity {
         }
         if (isDodgeLeft()){
             dodge(false);
+        }
+        if (isBlock()) {
+            toPlay = block;
+            if (toPlay.isAnimationDone()) {
+                setCurrentEntityState(EntityStates.IDLE);
+                addCoolDown(10);
+            }
         }
     }
     private void attackStateSet() {
