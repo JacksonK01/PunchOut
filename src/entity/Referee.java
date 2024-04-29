@@ -7,6 +7,11 @@ public class Referee extends Entity {
     }
 
     @Override
+    protected void resetCoordinates() {
+
+    }
+
+    @Override
     public void introStateUpdate() {
 
     }

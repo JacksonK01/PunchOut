@@ -56,8 +56,8 @@ public class GlassJoe extends Entity {
         this.worldX = 525;
         this.worldY = 60;
 
-        this.entityWidth = 80;
-        this.entityHeight = 210;
+        this.entityWidth = 90;
+        this.entityHeight = 240;
 
         int SPRITE_WIDTH = 32;
         int SPRITE_HEIGHT = 112;
@@ -198,6 +198,12 @@ public class GlassJoe extends Entity {
     }
 
     @Override
+    protected void resetCoordinates() {
+        this.worldX = X_REST_POINT;
+        this.worldY = Y_REST_POINT;
+    }
+
+    @Override
     public void introStateUpdate() {
         if (introTimer < 120) {
             toPlay = startPose;
@@ -217,7 +223,7 @@ public class GlassJoe extends Entity {
                     dodgeDirection();
                 }
             }
-            if (isPlayerIdleRequest.request(this)) {
+            if (isPlayerIdleRequest.request(this) || isAttacking.request(this)) {
                 //generate random number to see if he will attack
                 int attack = (int) (Math.random() * 100);
                 if (attack < 1) {

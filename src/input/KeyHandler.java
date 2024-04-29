@@ -34,7 +34,6 @@ public class KeyHandler implements KeyListener {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastSPressTime <= DOUBLE_PRESS_THRESHOLD && currentTime - lastSPressTime > 20 && downReleased) {
                 doubleDownPressed = true;
-                System.out.println("Double Pressed");
             } else {
                 downPressed = true;
             }

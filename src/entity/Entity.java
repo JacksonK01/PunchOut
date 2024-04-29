@@ -169,6 +169,7 @@ public abstract class Entity {
         } else if (GamePhaseManager.getGlobalEventState() == GamePhase.FIGHT) {
             if(isHitStun()) {
                 onHit();
+                resetCoordinates();
             } else {
                 fightStateUpdate();
             }
@@ -185,6 +186,8 @@ public abstract class Entity {
         toPlay.drawAnimation(g2);
         animationRegistryReset(toPlay);
     }
+
+    protected abstract void resetCoordinates();
 
     protected abstract void introStateUpdate();
 
