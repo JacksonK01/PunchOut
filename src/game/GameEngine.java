@@ -5,7 +5,6 @@ import entity.GlassJoe;
 import entity.Player;
 import game.events.AttackHandler;
 import game.events.EventHandler;
-import game.events.EventQueueHandler;
 import game.events.RequestHandler;
 import input.KeyHandler;
 
@@ -22,7 +21,6 @@ public class GameEngine {
     private Entity opponent;
     private KeyHandler keyH;
     private final GamePhaseManager gamePhaseManager;
-    private final Queue<EventHandler> oneFrameEventQueue = new LinkedList<>();
 
     /** Event handler for generic attacks. */
     private final AttackHandler genericAttackEvent = (attacker, damage) -> {
@@ -35,10 +33,6 @@ public class GameEngine {
             defender.setStateToHit();
             System.out.println(attacker + " attacked " + defender + " for " + damage + " damage");
         }
-    };
-
-    private final EventQueueHandler addEventToQueue = (event) -> {
-        this.oneFrameEventQueue.add(event);
     };
 
     private final RequestHandler<Boolean> isDodgingRequest = (receiver) -> {
@@ -109,10 +103,6 @@ public class GameEngine {
         gamePhaseManager.update();
         player.update();
         opponent.update();
-
-        if (oneFrameEventQueue.peek() != null) {
-            oneFrameEventQueue.remove().execute();
-        }
     }
     /**
      * Draws the opponent and player entities on the provided graphics context.
