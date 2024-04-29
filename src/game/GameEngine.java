@@ -21,6 +21,7 @@ public class GameEngine {
     private Entity opponent;
     private KeyHandler keyH;
     private final GamePhaseManager gamePhaseManager;
+    private int timer = 0;
     Sound crowd = new Sound("/sound/effect/crowd_noise.wav");
 
 
@@ -31,11 +32,14 @@ public class GameEngine {
             if (attacker == player) {
                 player.score += 100;
             }
+            crowd.changeVolume(-24);
             crowd.play();
+            timer = 0;
             defender.doDamage(damage);
             defender.setStateToHit();
             System.out.println(attacker + " attacked " + defender + " for " + damage + " damage");
         }
+
     };
 
     private final RequestHandler<Boolean> isDodgingRequest = (receiver) -> {
@@ -73,7 +77,6 @@ public class GameEngine {
      * Initializes the player, opponent, key handler, and event manager.
      */
     public GameEngine() {
-        crowd.changeVolume(-27);
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent, isRightHandRequest);
         this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest, isStrongRequest);
@@ -107,6 +110,12 @@ public class GameEngine {
         gamePhaseManager.update();
         player.update();
         opponent.update();
+        if(crowd.isPlaying()){
+            if(timer-24 > -60){
+                timer--;
+                crowd.changeVolume(timer-24);
+            }
+        }
     }
     /**
      * Draws the opponent and player entities on the provided graphics context.

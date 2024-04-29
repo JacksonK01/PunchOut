@@ -40,4 +40,8 @@ public class Sound {
     public void changeVolume(float volume) {
         volumeControl.setValue(volume);
     }
+    public boolean isPlaying() {
+        return clip.isRunning();
+    }
+
 }
