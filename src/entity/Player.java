@@ -109,7 +109,7 @@ public class Player extends Entity {
                 .setFrame(jabRight.getFrame(1), 1)
                 .setFrame(spriteSheet.getSubimage(376, 8, SPRITE_WIDTH - 1, SPRITE_HEIGHT + 19), 2)
                 .setLoop(false)
-                .setSpeed(12)
+                .setSpeed(9)
                 .build();
 
         jabLeft = AnimationBuilder.newInstance()
@@ -130,7 +130,7 @@ public class Player extends Entity {
                 .setFrame(jabLeft.getFrame(2), 2)
                 .setFrame(spriteSheet.getSubimage(220, 8, SPRITE_WIDTH, SPRITE_HEIGHT + 19), 3)
                 .setLoop(false)
-                .setSpeed(8)
+                .setSpeed(6)
                 .build();
 
         block = AnimationBuilder.newInstance()
