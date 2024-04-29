@@ -222,7 +222,11 @@ public class GlassJoe extends Entity {
             if (isAttacking.request(this)) {
                 int dodge = (int) (Math.random() * 100);
                 if (dodge < 10) {
-                    dodgeDirection();
+                    if(isStrongPunch.request(this)){
+                        setCurrentEntityState(EntityStates.BLOCK);
+                    } else {
+                        dodgeDirection();
+                    }
                 }
             }
             if (isPlayerIdleRequest.request(this) || isAttacking.request(this)) {
