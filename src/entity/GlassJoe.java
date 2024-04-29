@@ -2,6 +2,7 @@ package entity;
 
 import entity.animation.Animation;
 import entity.animation.AnimationBuilder;
+import game.Sound;
 import game.events.AttackHandler;
 import game.events.RequestHandler;
 import utility.UtilityTool;
@@ -23,6 +24,8 @@ public class GlassJoe extends Entity {
     private final Animation dodgeRight;
     private Animation gettingBackUp;
     private final Animation block;
+
+    private final Sound punch = new Sound("/sound/effect/enemy_incoming.wav");
 
     AttackHandler attackEvent;
     RequestHandler<Boolean> isPlayerIdleRequest;
@@ -46,6 +49,8 @@ public class GlassJoe extends Entity {
         this.isDodging = isDodgingRequest;
         this.isHitStun = isHitStunRequest;
         this.isStrongPunch = isStrongPunchRequest;
+
+        this.punch.changeVolume(-10);
 
         BufferedImage spriteSheet = null;
         try {
@@ -271,9 +276,11 @@ public class GlassJoe extends Entity {
     private void jab(Boolean isRight) {
         if (isRight) {
             this.toPlay = jabRight;
-
         } else {
             this.toPlay = jabLeft;
+        }
+        if (toPlay.getDuration() <= 1) {
+            punch.play();
         }
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
