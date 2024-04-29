@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public abstract class Entity {
     protected int health = 50;
+    protected int maxHealth = 50;
     protected int worldX, worldY;
     protected BufferedImage sprite;
     /**
@@ -57,7 +58,9 @@ public abstract class Entity {
     public int getHealth() {
         return this.health;
     }
-
+    public int getMaxHealth() {
+        return this.maxHealth;
+    }
     protected boolean isDodgeRight() {
         return this.currentState == EntityStates.DODGE_RIGHT;
     }

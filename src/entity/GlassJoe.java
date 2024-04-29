@@ -262,16 +262,48 @@ public class GlassJoe extends Entity {
                 addCoolDown(10);
             }
         }
+        if (isStrongPunchRight()) {
+            toPlay = strongPunchRightArm;
+            if (toPlay.isAnimationDone()) {
+                setCurrentEntityState(EntityStates.IDLE);
+                addCoolDown(10);
+            }
+        }
+        if (isStrongPunchLeft()) {
+            toPlay = strongPunchLeftArm;
+            if (toPlay.isAnimationDone()) {
+                setCurrentEntityState(EntityStates.IDLE);
+                addCoolDown(10);
+            }
+        }
     }
     private void attackStateSet() {
         //generate random number to see if he will attack
         int attack = (int) (Math.random() * 100);
-        if (attack < 50) {
-            setCurrentEntityState(EntityStates.JAB_RIGHT);
+        if(getHealth() > getMaxHealth()/2){
+            if (attack < 45) {
+                setCurrentEntityState(EntityStates.JAB_RIGHT);
+            }
+            else if(attack < 90) {
+                setCurrentEntityState(EntityStates.JAB_LEFT);
+            } else if (attack < 95) {
+                setCurrentEntityState(EntityStates.STRONG_PUNCH_LEFT);
+            } else {
+                setCurrentEntityState(EntityStates.STRONG_PUNCH_RIGHT);
+            }
+        } else {
+            if (attack < 15) {
+                setCurrentEntityState(EntityStates.JAB_RIGHT);
+            }
+            else if(attack < 30) {
+                setCurrentEntityState(EntityStates.JAB_LEFT);
+            } else if (attack < 65) {
+                setCurrentEntityState(EntityStates.STRONG_PUNCH_LEFT);
+            } else {
+                setCurrentEntityState(EntityStates.STRONG_PUNCH_RIGHT);
+            }
         }
-        else {
-            setCurrentEntityState(EntityStates.JAB_LEFT);
-        }
+
     }
     private void jab(Boolean isRight) {
         if (isRight) {
