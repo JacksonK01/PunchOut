@@ -20,4 +20,9 @@ public class Referee extends Entity {
     public void fightStateUpdate() {
 
     }
+
+    @Override
+    protected void endStateUpdate() {
+
+    }
 }

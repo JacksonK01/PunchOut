@@ -36,6 +36,7 @@ public abstract class Entity {
     protected int cooldown = 0;
     protected Animation onHit;
     protected Animation onHitStrongLeft, onHitStrongRight;
+    protected boolean isOutOfStaminaMode;
 
     public Entity() {}
 
@@ -189,6 +190,9 @@ public abstract class Entity {
             if (isIdle()) {
                 resetCoordinates();
             }
+        } else if (GamePhaseManager.getGlobalEventState() == GamePhase.END) {
+            endStateUpdate();
+            resetCoordinates();
         }
     }
     /**
@@ -205,6 +209,8 @@ public abstract class Entity {
     protected abstract void introStateUpdate();
 
     protected abstract void fightStateUpdate();
+
+    protected abstract void endStateUpdate();
     /**
      * Handles logic when the entity is hit by an attack.
      */
@@ -215,7 +221,11 @@ public abstract class Entity {
         int HIT_STUN_FRAME_MAX = 20;
         if (hitStunFrames > HIT_STUN_FRAME_MAX) {
             hitStunFrames = 0;
-            setCurrentEntityState(EntityStates.IDLE);
+            if(isOutOfStaminaMode) {
+                setCurrentEntityState(EntityStates.OUT_OF_STAMINA);
+            } else {
+                setCurrentEntityState(EntityStates.IDLE);
+            }
         }
     }
     /**

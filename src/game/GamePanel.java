@@ -128,6 +128,10 @@ public class GamePanel extends JPanel implements Runnable {
         if (GamePhaseManager.getGlobalEventState() != GamePhase.INTRO) {
             crowd.stop();
         }
+        if (GamePhaseManager.getGlobalEventState() == GamePhase.END) {
+            themeSong.stop();
+        }
+
     }
     /**
      * Paints the game scene and UI elements on the panel.

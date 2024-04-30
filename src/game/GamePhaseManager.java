@@ -1,17 +1,17 @@
 package game;
 
 import game.GamePhase;
+import game.events.RequestHandler;
 
 public class GamePhaseManager {
     private static GamePhase globalEventState;
     private static int timer;
+    private static RequestHandler<Boolean> isGameOver;
 
-    public GamePhaseManager() {
+    public GamePhaseManager(RequestHandler<Boolean> isCheckGameOver) {
         globalEventState = GamePhase.INTRO;
         timer = 0;
-    }
-
-    private void setGlobalEventState() {
+        isGameOver = isCheckGameOver;
     }
 
     private void runIntroEvent() {
@@ -22,9 +22,11 @@ public class GamePhaseManager {
     }
 
     public void update() {
-        setGlobalEventState();
         if (globalEventState == GamePhase.INTRO) {
             runIntroEvent();
+        }
+        if(isGameOver.request(null)) {
+            globalEventState = GamePhase.END;
         }
     }
 

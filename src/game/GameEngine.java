@@ -23,23 +23,32 @@ public class GameEngine {
     private final GamePhaseManager gamePhaseManager;
     private int timer = 0;
     Sound crowd = new Sound("/sound/effect/crowd_noise.wav");
-
+    Sound win = new Sound("/sound/music/win_theme.wav");
+    Sound lose = new Sound("/sound/music/lost_theme.wav");
 
     /** Event handler for generic attacks. */
     private final AttackHandler genericAttackEvent = (attacker, damage) -> {
         Entity defender = attacker == player ? opponent : player;
-        if ((defender.isIdle() || defender.isAttacking()) && !defender.isHitStun()) {
+        if (!defender.isDodging() && !defender.isHitStun()) {
             if (attacker == player) {
                 player.score += 100;
+            } else {
+                if (player.score > 0) {
+                    player.score -= 100;
+                }
             }
             crowd.changeVolume(-24);
             crowd.play();
             timer = 0;
             defender.doDamage(damage);
             defender.setStateToHit();
-            System.out.println(attacker + " attacked " + defender + " for " + damage + " damage");
-        }
 
+            if(player.getHealth() <= 0) {
+                lose.play();
+            } else if (opponent.getHealth() <= 0) {
+                win.play();
+            }
+        }
     };
 
     private final RequestHandler<Boolean> isDodgingRequest = (receiver) -> {
@@ -71,6 +80,10 @@ public class GameEngine {
         return sender.isRightHand();
     };
 
+    private final RequestHandler<Boolean> isMatchOver = (placeHolder) -> {
+        return player.getHealth() <= 0 || opponent.getHealth() <= 0;
+    };
+
 
     /**
      * Constructs a new GameEngine with the specified game panel.
@@ -80,7 +93,10 @@ public class GameEngine {
         this.keyH = new KeyHandler();
         this.player = new Player(keyH, genericAttackEvent, isRightHandRequest);
         this.opponent = new GlassJoe(genericAttackEvent, isIdleRequest, isHitStunRequest, isAttackingRequest, isDodgingRequest, isHitStunRequest, isStrongRequest);
-        this.gamePhaseManager = new GamePhaseManager();
+        this.gamePhaseManager = new GamePhaseManager(isMatchOver);
+
+        win.changeVolume(-15);
+        lose.changeVolume(-15);
     }
     /**
      * Retrieves the player entity.

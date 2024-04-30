@@ -22,6 +22,8 @@ public class Player extends Entity {
     private final Animation dodgeRight, dodgeLeft, block, dodgeDown;
     private final Animation jabRight, jabLeft;
     private final Animation strongPunchRight, strongPunchLeft;
+    private final Animation walk;
+    private final Animation tired;
     private int blockFrameCounter = 0;
     public int score = 0;
     int dodgeFrameCounter = 0;
@@ -31,6 +33,10 @@ public class Player extends Entity {
     private final KeyHandler keyH;
     private int stamina = 20;
     private final Sound punch = new Sound("/sound/effect/punch.wav");
+
+    private Animation victory;
+    private Animation lose;
+    private int staminaTimer;
 
     /**
      * Constructs a new Player entity with the specified key handler and attack event handler.
@@ -43,8 +49,8 @@ public class Player extends Entity {
         this.keyH = keyH;
         this.attackEvent = attackEvent;
         this.isRightHandedRequest = isRightHandedRequest;
-        this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2 + 20;
-        this.worldY = 380;
+        this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
+        this.worldY = 500; //380
         this.punch.changeVolume(-10);
 
         this.entityWidth = 60;
@@ -79,6 +85,15 @@ public class Player extends Entity {
                 .setFrame(sprite, 0)
                 .setSpeed(0)
                 .setLoop(false)
+                .build();
+
+        this.walk = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(2)
+                .setFrame(sprite, 0)
+                .setFrame(spriteSheet.getSubimage(132, 23, 26, 61), 1)
+                .setSpeed(10)
+                .setLoop(true)
                 .build();
 
         dodgeLeft = AnimationBuilder.newInstance()
@@ -157,7 +172,31 @@ public class Player extends Entity {
                 .setFrame(spriteSheet.getSubimage(151, 99, SPRITE_WIDTH, SPRITE_HEIGHT), 0)
                 .setSpeed(0)
                 .setLoop(false)
-                .build();;
+                .build();
+
+        victory = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(2)
+                .setFrame(spriteSheet.getSubimage(1, 91, SPRITE_WIDTH, 71), 0)
+                .setFrame(spriteSheet.getSubimage(26, 91, SPRITE_WIDTH, 71), 1)
+                .setSpeed(30)
+                .setLoop(true)
+                .build();
+
+        lose = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(1)
+                .setFrame(spriteSheet.getSubimage(217, 91, SPRITE_WIDTH, 71), 0)
+                .setSpeed(0)
+                .setLoop(true)
+                .build();
+
+        tired = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithArray(UtilityTool.createArrayForAnimation(spriteSheet, 3, 51, 27, 24, 64, this.entityWidth, this.entityHeight))
+                .setSpeed(12)
+                .setLoop(true)
+                .build();
 
         this.toPlay = idle;
     }
@@ -186,7 +225,6 @@ public class Player extends Entity {
         if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
             addCoolDown(16);
-            stamina--;
         }
     }
 
@@ -196,8 +234,10 @@ public class Player extends Entity {
         }
         int m;
         int JAB_SPEED;
+        int damage;
         if (isStrongPunch) {
             JAB_SPEED = 5;
+            damage = 2;
             if (isJabRight) {
                 this.currentState = EntityStates.STRONG_PUNCH_RIGHT;
                 m = -1;
@@ -207,6 +247,7 @@ public class Player extends Entity {
             }
         } else {
             JAB_SPEED = 2;
+            damage = 1;
             if(isJabRight) {
                 this.currentState = EntityStates.JAB_RIGHT;
                 m = -1;
@@ -218,15 +259,19 @@ public class Player extends Entity {
         if (toPlay.isAnimationDone(toPlay.getAnimationDuration()/2)) {
             this.worldY += JAB_SPEED;
             this.worldX -= m;
-            this.attackEvent.execute(this, 10);
+            this.attackEvent.execute(this, damage);
         } else {
             this.worldY -= JAB_SPEED;
             this.worldX += m;
         }
         if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
-            addCoolDown(6);
-            stamina--;
+            addCoolDown(10);
+            if (isStrongPunch) {
+                stamina -= 4;
+            } else {
+                stamina--;
+            }
         }
     }
 
@@ -251,7 +296,7 @@ public class Player extends Entity {
         this.currentState = EntityStates.DODGE_DOWN;
         if (toPlay.isAnimationDone()) {
             this.currentState = EntityStates.IDLE;
-            addCoolDown(10);
+            addCoolDown(14);
         }
     }
 
@@ -263,7 +308,12 @@ public class Player extends Entity {
 
     @Override
     protected void introStateUpdate() {
-
+        toPlay = walk;
+        if(worldY > 380) {
+            worldY--;
+        } else {
+            toPlay = idle;
+        }
     }
 
     /**
@@ -295,6 +345,40 @@ public class Player extends Entity {
         } else if ((keyH.downPressed && isReadyForAction()) || isBlock()) {
             toPlay = block;
             block();
+        }
+
+        if (this.stamina < 0) {
+            this.stamina = 0;
+        }
+        if (this.stamina == 0 || isOutOfStamina()) {
+            this.currentState = EntityStates.OUT_OF_STAMINA;
+            this.isOutOfStaminaMode = true;
+            toPlay = tired;
+            if(staminaTimer > 80) {
+                stamina++;
+                staminaTimer = 0;
+            }
+            if(this.stamina >= 10) {
+                this.currentState = EntityStates.IDLE;
+                this.isOutOfStaminaMode = false;
+                toPlay = idle;
+            }
+        }
+        if (staminaTimer > 100 && stamina < 20) {
+            this.stamina++;
+            staminaTimer = 0;
+        }
+        if(stamina < 20) {
+            staminaTimer++;
+        }
+    }
+
+    @Override
+    protected void endStateUpdate() {
+        if(getHealth() > 0) {
+            this.toPlay = victory;
+        } else {
+            this.toPlay = lose;
         }
     }
 

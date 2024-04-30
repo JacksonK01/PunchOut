@@ -24,6 +24,8 @@ public class GlassJoe extends Entity {
     private final Animation dodgeRight;
     private Animation gettingBackUp;
     private final Animation block;
+    private Animation victory;
+    private Animation lose;
 
     private final Sound punch = new Sound("/sound/effect/enemy_incoming.wav");
 
@@ -187,7 +189,15 @@ public class GlassJoe extends Entity {
                 .setLoop(false)
                 .build();
 
+        victory = startPose;
 
+        lose = AnimationBuilder.newInstance()
+                .setOwnerEntity(this)
+                .setAnimationWithoutArray(1)
+                .setFrameAndSize(spriteSheet.getSubimage(601, 162, 656 - 601, 207 - 162), 170, 70, 0)
+                .setSpeed(0)
+                .setLoop(false)
+                .build();
 
         this.toPlay = startPose;
 
@@ -234,7 +244,7 @@ public class GlassJoe extends Entity {
                     }
                 }
             }
-            if (isPlayerIdleRequest.request(this) || isAttacking.request(this)) {
+            if (!isDodging.request(this)) {
                 //generate random number to see if he will attack
                 int attack = (int) (Math.random() * 100);
                 if (attack < 2) {
@@ -269,6 +279,16 @@ public class GlassJoe extends Entity {
             strongPunch(false);
         }
     }
+
+    @Override
+    protected void endStateUpdate() {
+        if(getHealth() > 0) {
+            this.toPlay = victory;
+        } else {
+            this.toPlay = lose;
+        }
+    }
+
     private void attackStateSet() {
         //generate random number to see if he will attack
         int attack = (int) (Math.random() * 100);
@@ -309,7 +329,7 @@ public class GlassJoe extends Entity {
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
         if ((maxDuration/2) < duration && duration < maxDuration - 15) {
-            attackEvent.execute(this, 20);
+            attackEvent.execute(this, 1);
         }
         if (toPlay.isAnimationDone()) {
             setCurrentEntityState(EntityStates.IDLE);
@@ -352,7 +372,7 @@ public class GlassJoe extends Entity {
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
         if ((maxDuration/2) < duration && duration < maxDuration - 10) {
-            attackEvent.execute(this, 20);
+            attackEvent.execute(this, 2);
         }
         if (toPlay.isAnimationDone()) {
             setCurrentEntityState(EntityStates.IDLE);
