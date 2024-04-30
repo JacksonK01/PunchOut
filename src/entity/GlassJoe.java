@@ -329,7 +329,7 @@ public class GlassJoe extends Entity {
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
         if ((maxDuration/2) < duration && duration < maxDuration - 15) {
-            attackEvent.execute(this, 1);
+            attackEvent.execute(this, 2);
         }
         if (toPlay.isAnimationDone()) {
             setCurrentEntityState(EntityStates.IDLE);
@@ -372,7 +372,7 @@ public class GlassJoe extends Entity {
         long duration = toPlay.getDuration();
         int maxDuration = toPlay.getAnimationDuration();
         if ((maxDuration/2) < duration && duration < maxDuration - 10) {
-            attackEvent.execute(this, 2);
+            attackEvent.execute(this, 4);
         }
         if (toPlay.isAnimationDone()) {
             setCurrentEntityState(EntityStates.IDLE);
