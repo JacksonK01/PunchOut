@@ -38,30 +38,49 @@ public abstract class Entity {
     protected Animation onHitStrongLeft, onHitStrongRight;
     protected boolean isOutOfStaminaMode;
 
+    /**
+     * Placeholder
+     */
     public Entity() {}
-
+    /**
+     * returns entity x position
+     */
     public int getWorldX() {
         return this.worldX;
     }
-
+    /**
+     * returns entity y position
+     */
     public int getWorldY() {
         return this.worldY;
     }
-
+    /**
+     * returns entity sprite width
+     */
     public int getEntityWidth() {
         return entityWidth;
     }
-
+    /**
+     * returns entity sprite height
+     */
     public int getEntityHeight() {
         return entityHeight;
     }
-
+    /**
+     * returns entity health
+     */
     public int getHealth() {
         return this.health;
     }
+    /**
+     * returns entity max health
+     */
     public int getMaxHealth() {
         return this.maxHealth;
     }
+    /**
+     * returns if entity is dodging right
+     */
     protected boolean isDodgeRight() {
         return this.currentState == EntityStates.DODGE_RIGHT;
     }

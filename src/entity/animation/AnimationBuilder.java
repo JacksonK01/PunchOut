@@ -61,6 +61,14 @@ public class AnimationBuilder {
         }
         return this;
     }
+    /**
+     * Sets the frame and size of the animation. This method should not be used if you've already used setAnimationWithArray().
+     * @param image The image to set as the frame.
+     * @param width The width of the frame.
+     * @param height The height of the frame.
+     * @param i The index of the frame.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setFrameAndSize(BufferedImage image, int width, int height, int i) {
         BufferedImage scaleImage = UtilityTool.scaleImage(image, width, height);
         if(this.frames != null) {
@@ -97,22 +105,38 @@ public class AnimationBuilder {
         this.loop = isLoop;
         return this;
     }
-
+    /**
+     * Sets the x position of the animation.
+     * @param x The x position of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setX(int x) {
         this.x = x;
         return this;
     }
-
+    /**
+     * Sets the y position of the animation.
+     * @param y The y position of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setY(int y) {
         this.y = y;
         return this;
     }
-
+    /**
+     * Sets the width of the animation.
+     * @param width The width of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setWidth(int width) {
         this.width = width;
         return this;
     }
-
+    /**
+     * Sets the height of the animation.
+     * @param height The height of the animation.
+     * @return The AnimationBuilder instance for method chaining.
+     */
     public AnimationBuilder setHeight(int height) {
         this.height = height;
         return this;

@@ -12,6 +12,11 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+
+/**
+ * Represents the user interface for the Punch Out game.
+ * Handles rendering of the game's UI elements.
+ */
 public class UI {
     private BufferedImage spriteSheet;
     private BufferedImage[] numberSprites = new BufferedImage[10];
@@ -24,6 +29,11 @@ public class UI {
 
     //Max amount of digits a scoreboard can display
     public final int MAX_DIGITS = 6;
+
+    /**
+     * Constructs a new UI with the specified game panel.
+     * @param gp
+     */
 
     public UI(GamePanel gp) {
         this.gp = gp;
@@ -51,27 +61,26 @@ public class UI {
         }
     }
 
-        public void update() {
-
-        }
-        public void drawScore(Graphics2D g2){
+    /**
+     * Draws the player's score on the provided graphics context.
+      * @param g2
+     */
+    public void drawScore(Graphics2D g2){
             // made it without an image builder, but it works ig
             int score = gp.getGameEngine().getPlayer().score;
 
             String scoreStr = Integer.toString(score);
 
             int shift = (MAX_DIGITS - scoreStr.length()) * 20;
-            /*
-            for (int i = scoreStr.length()-1; i >= 0; i--) {
-                int digit = Character.getNumericValue(scoreStr.charAt(i));
-                g2.drawImage(numberSprites[digit], 200* gp.scale - (Math.abs(i-scoreStr.length()-1)) * (numberSprites[digit].getWidth()-textGap) * gp.scale , 21 * gp.scale + 2, numberSprites[digit].getWidth()* gp.scale - textSmaller, numberSprites[digit].getHeight()* gp.scale - textSmaller,  null);
-            }
-            */
             g2.setFont(customFont);
             g2.setColor(Color.WHITE);
             // TODO: If keep, make font always keep last digit in the same place
             g2.drawString(scoreStr, 150* gp.scale + shift, 27* gp.scale + 2);
         }
+        /**
+         * Draws the player's stamina on the provided graphics context.
+         * @param g2
+         */
         public void drawStamina(Graphics2D g2){
             int stamina = gp.getGameEngine().getPlayer().getStamina();
 
@@ -84,6 +93,10 @@ public class UI {
                 g2.drawImage(numberSprites[digit], (((78 * gp.scale) - (Math.abs(i-scoreStr.length()-1)) * (numberSprites[digit].getWidth()) * gp.scale)), 14* gp.scale + 2, numberSprites[digit].getWidth()* gp.scale - textSmaller, numberSprites[digit].getHeight()* gp.scale - textSmaller,  null);
             }
         }
+        /**
+         * Draws the player's charge on the provided graphics context.
+         * @param g2
+         */
         public void drawCharge(Graphics2D g2){
             //int charge = gp.player.;
             int charge = 0;
@@ -93,6 +106,10 @@ public class UI {
                 g2.drawImage(numberSprites[digit], 45 * gp.scale - (Math.abs(i-scoreStr.length()-1)) * (numberSprites[digit].getWidth()-textGap) * gp.scale , 14* gp.scale + 2, numberSprites[digit].getWidth()* gp.scale - textSmaller, numberSprites[digit].getHeight()* gp.scale - textSmaller,  null);
             }
         }
+        /**
+         * Draws the player's health on the provided graphics context.
+         * @param g2
+         */
         public void drawHealth(Graphics2D g2){
             int maxHealthPlayer = 50; // Maximum health
             int maxHealthEnemy = 50; // Maximum health
@@ -101,13 +118,13 @@ public class UI {
             int currentHealthPlayer = gp.getGameEngine().getPlayer().getHealth();
             int currentHealthEnemy = gp.getGameEngine().getOpponent().getHealth();
 
-            int barWidth = 49 * gp.scale - 2; // Width of the health bar
-            int barHeight = 6 * gp.scale + 1; // Height of the health bar
+            int barWidth = 49 * gp.scale - 2;
+            int barHeight = 6 * gp.scale + 1;
 
-            int x1 = 88 * gp.scale; // X position of the health bar
-            int y1 = 14 * gp.scale - 1; // Y position of the health bar
-            int x2 = 144 * gp.scale; // X position of the health bar
-            int y2 = 14 * gp.scale - 1; // Y position of the health bar
+            int x1 = 88 * gp.scale;
+            int y1 = 14 * gp.scale - 1;
+            int x2 = 144 * gp.scale;
+            int y2 = 14 * gp.scale - 1;
 
             // Draw the background of the health bar
             g2.setColor(Color.BLACK);
@@ -124,10 +141,12 @@ public class UI {
             filledWidth = (int) ((currentHealthEnemy / (double) maxHealthEnemy) * barWidth);
             g2.fillRect(x2, y2, filledWidth, barHeight);
 
-            // Draw the border of the health bar
-            //g2.setColor(Color.BLACK);
-            //g2.drawRect(x, y, barWidth, barHeight);
+
 }
+        /**
+         * Draws the scoreboard on the provided graphics context.
+         * @param g2
+         */
         public void drawScoreboard(Graphics2D g2){
             // get round on sprite sheet
             // get timer, use font to display
@@ -139,6 +158,10 @@ public class UI {
 
         }
         public int counter = 0;
+        /**
+         * Draws the timer on the provided graphics context.
+         * @param g2
+         */
         public void drawTimer(Graphics2D g2){
             // get timer, use font to display
             if(GamePhaseManager.getGlobalEventState() == GamePhase.FIGHT) {
@@ -158,8 +181,10 @@ public class UI {
             g2.setFont(customFont.deriveFont(22f));
             g2.drawString(time, 209* gp.scale, 20* gp.scale+1);
         }
-
-
+        /**
+         * Draws the UI elements.
+         * @param g2
+         */
         public void draw (Graphics2D g2){
             drawScore(g2);
             drawStamina(g2);
@@ -167,5 +192,15 @@ public class UI {
             drawHealth(g2);
             drawScoreboard(g2);
             drawTimer(g2);
+            if(GamePhaseManager.getGlobalEventState() == GamePhase.END){
+                g2.setFont(customFont.deriveFont(40f));
+                g2.setColor(Color.WHITE);
+                if(gp.getGameEngine().getPlayer().getHealth() <= 0){
+                    g2.drawString("YOU LOSE", 80* gp.scale, 80* gp.scale);
+                } else {
+                    g2.drawString("YOU WIN", 80* gp.scale, 80* gp.scale);
+                }
+            }
+
         }
     }

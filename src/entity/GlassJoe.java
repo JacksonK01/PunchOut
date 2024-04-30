@@ -42,7 +42,16 @@ public class GlassJoe extends Entity {
     private final int Y_REST_POINT = PLAYER_Y_REST_POINT - 150;
 
     private int introTimer = 0;
-
+    /**
+     * Constructs a new Glass Joe entity with the specified attack event and request handlers.
+     * @param attackEvent The attack event handler.
+     * @param isPlayerIdleRequest The request handler for checking if the player is idle.
+     * @param isPlayerHitStunRequest The request handler for checking if the player is in hit stun.
+     * @param isAttackingRequest The request handler for checking if the entity is attacking.
+     * @param isDodgingRequest The request handler for checking if the entity is dodging.
+     * @param isHitStunRequest The request handler for checking if the entity is in hit stun.
+     * @param isStrongPunchRequest The request handler for checking if the entity is performing a strong punch.
+     */
     public GlassJoe(AttackHandler attackEvent, RequestHandler<Boolean> isPlayerIdleRequest, RequestHandler<Boolean> isPlayerHitStunRequest, RequestHandler<Boolean> isAttackingRequest, RequestHandler<Boolean> isDodgingRequest, RequestHandler<Boolean> isHitStunRequest, RequestHandler<Boolean> isStrongPunchRequest) {
         this.attackEvent = attackEvent;
         this.isPlayerIdleRequest = isPlayerIdleRequest;

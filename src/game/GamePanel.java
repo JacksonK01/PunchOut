@@ -122,7 +122,6 @@ public class GamePanel extends JPanel implements Runnable {
      * Updates the game state.
      */
     public void update() {
-        ui.update();
         engine.update();
 
         if (GamePhaseManager.getGlobalEventState() != GamePhase.INTRO) {

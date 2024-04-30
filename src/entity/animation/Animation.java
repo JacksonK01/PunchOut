@@ -70,57 +70,62 @@ public class Animation {
         }
     }
 
-    // Setters
-    public void setFrame(int i, BufferedImage image) {
-        if (i >= 0 && i < frames.length) {
-            this.frames[i] = image;
-        }
-    }
-
-    public void setCurrentFrameIndex(int i) {
-        if (i >= 0 && i < frames.length) {
-            this.currentFrameIndex = i;
-        }
-    }
-
-    public void setPos(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    // Getters
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public int getAmountOfFrames() {
         return this.frames.length;
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public BufferedImage getFrame(int i) {
         if (0 <= i && i < getAmountOfFrames()) {
             return this.frames[i];
         }
         return null;
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public BufferedImage[] getFrames() {
         return this.frames;
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public int getAnimationDuration() {
         return speed * frames.length;
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public long getDuration() {
         return this.duration;
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public boolean isAnimationDone() {
         return duration >= getAnimationDuration();
     }
-
+    /**
+     * Returns the current frame index of the animation.
+     * @return The current frame index.
+     */
     public boolean isAnimationDone(int subtract) {
         return duration >= getAnimationDuration() - subtract;
     }
 
-    // Reset
+    /**
+     * Resets the animation to its initial state.
+     */
     public void reset() {
         this.frameCounter = 0;
         this.currentFrameIndex = 0;
