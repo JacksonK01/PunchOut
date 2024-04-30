@@ -237,7 +237,7 @@ public class Player extends Entity {
         int damage;
         if (isStrongPunch) {
             JAB_SPEED = 5;
-            damage = 2;
+            damage = 3;
             if (isJabRight) {
                 this.currentState = EntityStates.STRONG_PUNCH_RIGHT;
                 m = -1;
@@ -279,6 +279,7 @@ public class Player extends Entity {
     private void block() {
         this.currentState = EntityStates.BLOCK;
         blockFrameCounter++;
+        staminaTimer--;
         int BLOCK_FRAMES = 30;
         if (!keyH.downPressed && blockFrameCounter >= BLOCK_FRAMES) {
             blockFrameCounter = 0;
@@ -358,7 +359,7 @@ public class Player extends Entity {
                 stamina++;
                 staminaTimer = 0;
             }
-            if(this.stamina >= 10) {
+            if(this.stamina >= 15) {
                 this.currentState = EntityStates.IDLE;
                 this.isOutOfStaminaMode = false;
                 toPlay = idle;
