@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.io.InputStream;
 
 /**
  * Represents the user interface for the Punch Out game.
@@ -41,7 +42,9 @@ public class UI {
         try {
             //numbers are in the same file as the sprite sheet for the boxing ring
             spriteSheet = ImageIO.read(getClass().getResource("/textures/ui/ui.png"));
-            customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Resource/textures/ui/punch-out-nes.ttf")).deriveFont(20f);
+            InputStream fontStream = getClass().getResourceAsStream("/textures/ui/punch-out-nes.ttf");
+            customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(20f);
+
         } catch (IOException | FontFormatException e) {
             e.printStackTrace();
         }
