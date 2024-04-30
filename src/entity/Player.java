@@ -39,11 +39,10 @@ public class Player extends Entity {
     private int staminaTimer;
 
     /**
-     * Constructs a new Player entity with the specified key handler and attack event handler.
-     * Initializes animations, coordinates, and other properties.
-     *
-     * @param keyH        The key handler for player input.
-     * @param attackEvent The event handler for player attacks.
+     * Constructs a new player entity with the specified key handler, attack handler, and request handler.
+     * @param keyH The key handler for the player.
+     * @param attackEvent The attack handler for the player.
+     * @param isRightHandedRequest The request handler for the player.
      */
     public Player(KeyHandler keyH, AttackHandler attackEvent, RequestHandler<Boolean> isRightHandedRequest) {
         this.keyH = keyH;
@@ -52,7 +51,6 @@ public class Player extends Entity {
         this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
         this.worldY = 500; //380
         this.punch.changeVolume(-10);
-
         this.entityWidth = 60;
         this.entityHeight = 160;
 
@@ -72,7 +70,6 @@ public class Player extends Entity {
         BufferedImage[] a = {spriteSheet.getSubimage(50, 100, SPRITE_WIDTH, SPRITE_HEIGHT), spriteSheet.getSubimage(75, 100, SPRITE_WIDTH, SPRITE_HEIGHT)};
         BufferedImage[] blockAnim = UtilityTool.createArrayForAnimation(spriteSheet, 2, 349, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
         BufferedImage[] tempDodgeDownAnim = UtilityTool.createArrayForAnimation(spriteSheet, 3, 348, 101, SPRITE_WIDTH, SPRITE_HEIGHT, this.entityWidth, this.entityHeight);
-        /* TODO: REMEMBER TO TIDY THIS UP */
         BufferedImage[] dodgeDownAnim = new BufferedImage[4];
         dodgeDownAnim[0] = tempDodgeDownAnim[0];
         dodgeDownAnim[1] = tempDodgeDownAnim[1];
@@ -200,11 +197,17 @@ public class Player extends Entity {
 
         this.toPlay = idle;
     }
-
+    /**
+     * Returns the player's stamina.
+     * @return The player's stamina.
+     */
     public int getStamina() {
         return this.stamina;
     }
-
+    /**
+     * method for the player dodge
+     * @param isDodgeRight boolean for if the player is dodging right
+     */
     private void dodge(boolean isDodgeRight) {
         int m;
         if (isDodgeRight) {
@@ -214,7 +217,6 @@ public class Player extends Entity {
             this.currentState = EntityStates.DODGE_LEFT;
             m = -1;
         }
-
         int DODGE_SPEED = 5;
         if (toPlay.isAnimationDone(toPlay.getAnimationDuration()/2)) {
             this.worldX -= DODGE_SPEED * m;
@@ -227,7 +229,11 @@ public class Player extends Entity {
             addCoolDown(16);
         }
     }
-
+    /**
+     * method for the player jab
+     * @param isJabRight boolean for if the player is jabbing right
+     * @param isStrongPunch boolean for if the player is doing a strong punch
+     */
     private void jab(boolean isJabRight, boolean isStrongPunch) {
         if (toPlay.getDuration() <= 1) {
             punch.play();
@@ -275,7 +281,9 @@ public class Player extends Entity {
         }
     }
 
-    // block method for player that also handles the ducking animation when s is pressed twice
+    /**
+     * block method for player that also handles the ducking animation when s is pressed twice
+     */
     private void block() {
         this.currentState = EntityStates.BLOCK;
         blockFrameCounter++;
@@ -292,7 +300,9 @@ public class Player extends Entity {
             this.currentState = EntityStates.DODGE_DOWN;
         }
     }
-
+    /**
+     * method for the player to dodge down
+     */
     private void dodgeDown() {
         this.currentState = EntityStates.DODGE_DOWN;
         if (toPlay.isAnimationDone()) {
@@ -300,13 +310,17 @@ public class Player extends Entity {
             addCoolDown(14);
         }
     }
-
+    /**
+     * overides the resetCoordinates method in Entity
+     */
     @Override
     protected void resetCoordinates() {
         this.worldX = GamePanel.screenWidth / 2 - GamePanel.scaledTileSize / 2;
         this.worldY = 380;
     }
-
+    /**
+     * overides the intro state update method in Entity
+     */
     @Override
     protected void introStateUpdate() {
         toPlay = walk;
@@ -373,7 +387,9 @@ public class Player extends Entity {
             staminaTimer++;
         }
     }
-
+    /**
+     * overides the end state update method in Entity
+     */
     @Override
     protected void endStateUpdate() {
         if(getHealth() > 0) {
@@ -382,7 +398,9 @@ public class Player extends Entity {
             this.toPlay = lose;
         }
     }
-
+    /**
+     * overides the onHit method in Entity
+     */
     @Override
     protected void onHit() {
         super.onHit();
@@ -391,7 +409,6 @@ public class Player extends Entity {
 
     /**
      * Returns a string representation of the player entity.
-     *
      * @return The string representation of the player.
      */
     @Override

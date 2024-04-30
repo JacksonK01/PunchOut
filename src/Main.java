@@ -4,6 +4,10 @@ import screens.Transitions;
 import javax.swing.*;
 
 //All assets are from https://www.spriters-resource.com/nes/punchout/
+/**
+ * Represents the main class for the Punch Out game.
+ * This class is responsible for creating the game window and starting the game.
+ */
 public class Main {
     public static void main(String[] args) {
         JFrame window = new JFrame();

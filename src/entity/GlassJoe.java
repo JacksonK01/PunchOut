@@ -211,6 +211,9 @@ public class GlassJoe extends Entity {
         this.toPlay = startPose;
 
     }
+    /**
+     * Returns the entity's intro animation.
+     */
     public void updateIntro() {
         if (worldX > X_REST_POINT) {
             worldX--;
@@ -222,13 +225,17 @@ public class GlassJoe extends Entity {
             introTimer = 0;
         }
     }
-
+    /**
+     * Resets the entity's coordinates to their default values.
+     */
     @Override
     protected void resetCoordinates() {
         this.worldX = X_REST_POINT;
         this.worldY = Y_REST_POINT;
     }
-
+    /**
+     * Updates the intro state
+     */
     @Override
     public void introStateUpdate() {
         if (introTimer < 120) {
@@ -239,7 +246,9 @@ public class GlassJoe extends Entity {
         }
         introTimer++;
     }
-
+    /**
+     * Updates the fight state and controls the Glass Joe's actions.
+     */
     @Override
     public void fightStateUpdate() {
         if(isReadyForAction()){
@@ -288,7 +297,9 @@ public class GlassJoe extends Entity {
             strongPunch(false);
         }
     }
-
+    /**
+     * Updates the victory state
+     */
     @Override
     protected void endStateUpdate() {
         if(getHealth() > 0) {
@@ -297,7 +308,9 @@ public class GlassJoe extends Entity {
             this.toPlay = lose;
         }
     }
-
+    /**
+     * Determines and sets Glass Joe's attack state
+     */
     private void attackStateSet() {
         //generate random number to see if he will attack
         int attack = (int) (Math.random() * 100);
@@ -326,6 +339,9 @@ public class GlassJoe extends Entity {
         }
 
     }
+    /**
+     * executes the jab animation
+     */
     private void jab(Boolean isRight) {
         if (isRight) {
             this.toPlay = jabRight;
@@ -345,6 +361,9 @@ public class GlassJoe extends Entity {
             addCoolDown(10);
         }
     }
+    /**
+     * Determines Glass Joe's dodge direction
+     */
     private void dodgeDirection() {
         int dodge = (int) (Math.random() * 100);
         if (dodge < 50) {
@@ -354,6 +373,9 @@ public class GlassJoe extends Entity {
             setCurrentEntityState(EntityStates.DODGE_LEFT);
         }
     }
+    /**
+     * Executes the dodge animation
+     */
     private void dodge(Boolean isRight) {
         if (isRight) {
             this.toPlay = dodgeRight;
@@ -365,6 +387,9 @@ public class GlassJoe extends Entity {
             addCoolDown(10);
         }
     }
+    /**
+     * Executes the strong punch animation
+     */
     private void strongPunch(Boolean isRight) {
         if (isRight) {
             this.toPlay = strongPunchRightArm;
@@ -389,7 +414,10 @@ public class GlassJoe extends Entity {
         }
 
     }
-
+    /**
+     * toString method for Glass Joe
+     * @return String Glass Joe
+     */
     @Override
     public String toString() {
         return "Glass Joe";

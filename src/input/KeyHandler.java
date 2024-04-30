@@ -15,11 +15,17 @@ public class KeyHandler implements KeyListener {
     private long lastSPressTime = 200;
     //Threshold for double press in milliseconds
     private static final long DOUBLE_PRESS_THRESHOLD = 200;
+    /**
+     * Invoked when a key has been typed.
+     */
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
-
+    /**
+     * Invoked when a key has been pressed.
+     * @param e The KeyEvent object.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
@@ -51,9 +57,10 @@ public class KeyHandler implements KeyListener {
             leftArm = true;
         }
     }
-
-
-
+    /**
+     * Invoked when a key has been released.
+     * @param e The KeyEvent object.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();

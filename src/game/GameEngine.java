@@ -50,36 +50,38 @@ public class GameEngine {
             }
         }
     };
-
+    /** Request handler for checking if the entity is dodging. */
     private final RequestHandler<Boolean> isDodgingRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isDodging();
     };
+    /** Request handler for checking if the entity is strong punching. */
     private final RequestHandler<Boolean> isStrongRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isStrongPunch();
     };
-
+    /** Request handler for checking if the entity is attacking. */
     private final RequestHandler<Boolean> isAttackingRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isAttacking();
     };
-
+    /** Request handler for checking if the entity is in hit stun. */
     private final RequestHandler<Boolean> isHitStunRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isHitStun();
     };
-
+    /** Request handler for checking if the entity is idle. */
     private final RequestHandler<Boolean> isIdleRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isIdle();
     };
     //If this is false, it's safe to assume it's the left hand
+    /** Request handler for checking if the entity punching with the right hand. */
     private final RequestHandler<Boolean> isRightHandRequest = (receiver) -> {
         Entity sender = receiver == player ? opponent : player;
         return sender.isRightHand();
     };
-
+    /** Request handler for checking if the match is over. */
     private final RequestHandler<Boolean> isMatchOver = (placeHolder) -> {
         return player.getHealth() <= 0 || opponent.getHealth() <= 0;
     };

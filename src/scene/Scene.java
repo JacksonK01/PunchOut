@@ -2,15 +2,19 @@ package scene;
 
 import java.awt.image.BufferedImage;
 
-//TODO add more to this class
 public class Scene {
-    //TODO make this an array so it can be animated
     private BufferedImage frame;
-
+    /**
+     * Constructs a new scene with the provided frame.
+     * @param frame The frame for the scene.
+     */
     public Scene(BufferedImage frame) {
         this.frame = frame;
     }
-
+    /**
+     * Retrieves the frame associated with this scene.
+     * @return The frame.
+     */
     public BufferedImage getFrame() {
         return frame;
     }

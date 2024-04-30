@@ -1,3 +1,6 @@
+/**
+ * NOT USED IN THE PROJECT
+ */
 package screens;
 import game.GameEngine;
 import game.GamePanel;
@@ -41,6 +44,7 @@ public class Transitions extends JPanel {
     private BufferedImage[] round = new BufferedImage[3];
     // 256, 224
     JFrame window;
+
     public Transitions(JFrame window) {
         this.setPreferredSize(new Dimension(768, 576));
         this.setBackground(Color.BLACK);

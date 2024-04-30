@@ -11,7 +11,10 @@ import java.util.HashMap;
 public class Sound {
     Clip clip;
     FloatControl volumeControl;
-
+    /**
+     * Creates a new Sound object with the given file location.
+     * @param fileLocation the file location of the sound file.
+     */
     public Sound(String fileLocation) {
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResource(fileLocation));
@@ -23,6 +26,9 @@ public class Sound {
             e.printStackTrace();
         }
     }
+    /**
+     * Plays the sound.
+     */
     public void play() {
         if (clip.isRunning()) {
             clip.stop();
@@ -30,16 +36,29 @@ public class Sound {
         clip.setFramePosition(0);
         clip.start();
     }
+    /**
+     * Loops the sound.
+     */
     public void loop() {
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
+    /**
+     * Stops the sound.
+     */
     public void stop() {
         clip.stop();
     }
-
+    /**
+     * Changes the volume of the sound.
+     * @param volume float for the volume to change to.
+     */
     public void changeVolume(float volume) {
         volumeControl.setValue(volume);
     }
+    /**
+     * Determines if the sound is playing.
+     * @return true if the sound is playing, false otherwise.
+     */
     public boolean isPlaying() {
         return clip.isRunning();
     }

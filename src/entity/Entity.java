@@ -84,71 +84,109 @@ public abstract class Entity {
     protected boolean isDodgeRight() {
         return this.currentState == EntityStates.DODGE_RIGHT;
     }
-
+    /**
+     * returns if entity is dodging left
+     */
     protected boolean isDodgeLeft() {
         return this.currentState == EntityStates.DODGE_LEFT;
     }
-
+    /**
+     * returns if entity is Jabbing right
+     */
     protected boolean isJabRight() {
         return this.currentState == EntityStates.JAB_RIGHT;
     }
-
+    /**
+     * returns if entity is Jabbing left
+     */
     protected boolean isJabLeft() {
         return this.currentState == EntityStates.JAB_LEFT;
     }
+    /**
+     * returns if entity is doing a strong punch
+     */
     public boolean isStrongPunch() {
         return this.currentState == EntityStates.STRONG_PUNCH_RIGHT || this.currentState == EntityStates.STRONG_PUNCH_LEFT;
     }
+    /**
+     * returns if entity is Strong punching right
+     */
     protected boolean isStrongPunchRight() {
         return this.currentState == EntityStates.STRONG_PUNCH_RIGHT;
     }
-
+    /**
+     * returns if entity is Strong punching left
+     */
     protected boolean isStrongPunchLeft() {
         return this.currentState == EntityStates.STRONG_PUNCH_LEFT;
     }
-
+    /**
+     * returns if entity is blocking
+     */
     protected boolean isBlock() {
         return this.currentState == EntityStates.BLOCK;
     }
-
+    /**
+     * returns if entity is dodging down
+     */
     protected boolean isDodgeDown() {
         return this.currentState == EntityStates.DODGE_DOWN;
     }
-
+    /**
+     * returns if entity is out of stamina
+     */
     protected boolean isOutOfStamina() {
         return this.currentState == EntityStates.OUT_OF_STAMINA;
     }
-
+    /**
+     * returns if entity is knocked out
+     */
     protected boolean isKnockedOut() {
         return this.currentState == EntityStates.KNOCKED_OUT;
     }
-
+    /**
+     * returns if entity is idle
+     */
     public boolean isIdle() {
         return this.currentState == EntityStates.IDLE;
     }
-
+    /**
+     * returns if entity is in hit stun
+     */
     public boolean isHitStun() {
         return this.currentState == EntityStates.HIT_STUN;
     }
 
-    //If this is false, then you can assume it's left
+    /**
+     * returns if entity is punching with right hand
+     */
+    // if false, assume left hand
     public boolean isRightHand() {
         return isStrongPunchRight() || isJabRight();
     }
-
+    /**
+     * returns if entity is attacking
+     */
     public boolean isAttacking() {
         return this.currentState == EntityStates.JAB_RIGHT ||
                 this.currentState == EntityStates.JAB_LEFT ||
                 this.currentState == EntityStates.STRONG_PUNCH_RIGHT ||
                 this.currentState == EntityStates.STRONG_PUNCH_LEFT;
     }
-
+    /**
+     * returns if entity is dodging
+     * @return boolean if entity is dodging
+     */
     public boolean isDodging() {
         return this.currentState == EntityStates.DODGE_DOWN ||
                 this.currentState == EntityStates.BLOCK ||
                 this.currentState == EntityStates.DODGE_LEFT ||
                 this.currentState == EntityStates.DODGE_RIGHT;
     }
+    /**
+     * returns if entity is ready for action
+     * @return boolean if entity is ready for action
+     */
     protected boolean isReadyForAction() {
         return cooldown == 0 && isIdle();
     }
@@ -172,17 +210,30 @@ public abstract class Entity {
                 }
         );
     }
-
+    /**
+     * Sets the current state of the entity.
+     * @param state The state to set the entity to.
+     */
     public void setCurrentEntityState(EntityStates state) {
         this.currentState = state;
     }
-
+    /**
+     * Adds the given number to the entity's cooldown.
+     * @param num The number to add to the cooldown.
+     */
     protected void addCoolDown(int num) {
         this.cooldown += num;
     }
+    /**
+     * Sets the entity's state to hit stun.
+     */
     public void setStateToHit() {
         this.currentState = EntityStates.HIT_STUN;
     }
+    /**
+     * Does damage to the entity.
+     * If the entity's health drops to 0 or below, the entity is knocked out.
+     */
     public void doDamage(int damage) {
         this.health -= damage;
         if (health <= 0) {
@@ -222,13 +273,22 @@ public abstract class Entity {
         toPlay.drawAnimation(g2);
         animationRegistryReset(toPlay);
     }
+    /**
+     * Used differently for each entity to reset coordinates.
+     */
 
     protected abstract void resetCoordinates();
-
+    /**
+     * Used differently for each entity to update the entity's state and animations during the intro phase.
+     */
     protected abstract void introStateUpdate();
-
+    /**
+     * Used differently for each entity to update the entity's state and animations during the fight phase.
+     */
     protected abstract void fightStateUpdate();
-
+    /**
+     * Used differently for each entity to update the entity's state and animations during the end phase.
+     */
     protected abstract void endStateUpdate();
     /**
      * Handles logic when the entity is hit by an attack.
