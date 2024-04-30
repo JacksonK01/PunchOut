@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PunchOut:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PunchOut_jar</output-path>
+    <root id="archive" name="PunchOut.jar">
+      <element id="module-output" name="PunchOut" />
+    </root>
+  </artifact>
+</component>

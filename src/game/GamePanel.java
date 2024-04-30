@@ -131,6 +131,10 @@ public class GamePanel extends JPanel implements Runnable {
             themeSong.stop();
         }
 
+        if (engine.getKeyHandler().escape) {
+            System.exit(0);
+        }
+
     }
     /**
      * Paints the game scene and UI elements on the panel.

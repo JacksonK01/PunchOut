@@ -6,7 +6,7 @@ import java.awt.event.KeyListener;
 //This is only for keyboard inputs
 public class KeyHandler implements KeyListener {
     //Movement
-    public boolean upPressed, rightPressed, downPressed, leftPressed, doubleDownPressed;
+    public boolean upPressed, rightPressed, downPressed, leftPressed, doubleDownPressed, escape;
     private boolean downReleased = true;
 
     //Attack
@@ -56,7 +56,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_K) {
             leftArm = true;
         }
+        if (code == KeyEvent.VK_ESCAPE) {
+            escape = true;
+        }
     }
+
     /**
      * Invoked when a key has been released.
      * @param e The KeyEvent object.
