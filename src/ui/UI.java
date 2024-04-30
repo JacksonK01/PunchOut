@@ -1,6 +1,9 @@
 package ui;
 
 import game.GamePanel;
+import game.GamePhase;
+import game.GamePhaseManager;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -138,12 +141,13 @@ public class UI {
         public int counter = 0;
         public void drawTimer(Graphics2D g2){
             // get timer, use font to display
-
-            if(counter >= 60){
-                counter = 0;
-                GamePanel.timeElapsed++;
+            if(GamePhaseManager.getGlobalEventState() == GamePhase.FIGHT) {
+                if(counter >= 60){
+                    counter = 0;
+                    GamePanel.timeElapsed++;
+                }
+                counter++;
             }
-            counter++;
             // get time in min:seconds format
             int minutes = GamePanel.timeElapsed / 60;
             int seconds = GamePanel.timeElapsed % 60;
