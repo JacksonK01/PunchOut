@@ -359,7 +359,7 @@ public class Player extends Entity {
                 stamina++;
                 staminaTimer = 0;
             }
-            if(this.stamina >= 15) {
+            if(this.stamina >= 10) {
                 this.currentState = EntityStates.IDLE;
                 this.isOutOfStaminaMode = false;
                 toPlay = idle;
